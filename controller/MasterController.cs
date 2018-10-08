@@ -60,12 +60,12 @@ namespace Controller
 
             if (userPreviousChoice == 2)
             {
-
+                this._boatController.deleteOrUpdateBoatFromList("Update");
             }
 
             if (userPreviousChoice == 3)
             {
-                this._boatController.DeleteBoatFromList();
+                this._boatController.deleteOrUpdateBoatFromList("Delete");
             }
 
             if (userPreviousChoice == 4)

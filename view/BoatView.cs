@@ -38,7 +38,7 @@ namespace View
             Console.ResetColor();
         }
 
-        public string ReadBoatIDInput()
+        public string ReadBoatIDInput(string message)
         {
             string input;
 
@@ -46,7 +46,7 @@ namespace View
             {
                 try
                 {
-                    Console.Write("Type the ID of the boat you want to delete: ");
+                    Console.Write(message);
                     input = Console.ReadLine();
 
                     if (input.Length != 6)

@@ -8,47 +8,37 @@ namespace View
 {
     public class MemberView
     {
-        public void successfullMemberCreation()
+        private BoatView _boatView;
+        public MemberView(BoatView boatView)
         {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\nMember successfully registered!\n");
-            Console.ResetColor();
+            this._boatView = boatView;
         }
-        public void unsuccessfullUpdate()
+
+        public string ToString(string format, Model.Member member) 
+        {
+            if (format == "Verbose" || format.Length == 0 || format == null) 
+            {     
+                return string.Join(" ", "Name: " + member.Name, "Personal-number: " + member.PersonalNumber, "Member-id: " + member.MemberID, "Boats: " + this._boatView.displayBoat(member.Boats));
+            }
+            if (format == "Compact") {
+                return string.Join(" ", "Name: " + member.Name, "Member-id: " + member.MemberID, "Boats: " + member.Boats.Count + ".");
+            }
+            throw new FormatException(nameof(format));
+        }
+
+        public void messageForError(string message)
         {
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\nMember not found!\n");
+            Console.WriteLine("\n " + message + " \n");
             Console.ResetColor();
         }
 
-        public void unsuccessfullFileLoad()
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\nNo members found on file. Please start with register a new member.\n");
-            Console.ResetColor();
-        }
-        public void successfullyUpdated(string user)
+        public void messageForSuccess(string message)
         {
             Console.BackgroundColor = ConsoleColor.Green;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\nMember " + user + " successfully updated!\n");
-            Console.ResetColor();
-        }
-        public void unsuccessfull()
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\nNo matching member!\n");
-            Console.ResetColor();
-        }
-        public void successfullyDeleted(string user)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\nMember " + user + " successfully deleted!\n");
+            Console.WriteLine("\n " + message + " \n");
             Console.ResetColor();
         }
 

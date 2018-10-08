@@ -10,21 +10,32 @@ namespace Controller
     {
         private static Random random = new Random();
         private View.MemberView _memberView;
+        private List<Model.Member> _memberModelList;
         public MemberController(View.MemberView memberView)
         {
             this._memberView = memberView;
+            if (fileExists(filePath()) == false) // No file -> creates a new file and user have to register a new member.
+            {
+                this._memberView.messageForSuccess("New file created at: " + filePath());
+                this._memberModelList = new List<Model.Member>();
+                this.SaveMemberList();
+            }
         }
         public void SaveMemberList() 
         {
             string username = this._memberView.ReadUsernameInput("Chose username: ");
             long personalNumber = this._memberView.ReadPersonalnumberInput("Type the personal-number, example [8907076154]: ");
 
-            List<Model.Member> MemberList = fileExists(filePath()) == true ? LoadMemberList() : new List<Model.Member>();
-            MemberList.Add(new Model.Member(username, personalNumber, RandomID()));
+            if (fileExists(filePath()) == true)
+            {
+                this._memberModelList = LoadMemberList();
+            }
 
-            this._memberView.successfullMemberCreation();
+            this._memberModelList.Add(new Model.Member(username, personalNumber, RandomID()));
+
+            this._memberView.messageForSuccess("Member successfully registered!");
                 
-            var json = JsonConvert.SerializeObject(MemberList, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
             File.WriteAllText(filePath(), json);
         }
 
@@ -33,7 +44,7 @@ namespace Controller
             List<Model.Member> deserializedMemberlist = JsonConvert.DeserializeObject<List<Model.Member>>(File.ReadAllText(@filePath()));
             if (deserializedMemberlist.Count == 0) 
             {
-                this._memberView.unsuccessfullFileLoad();
+                this._memberView.messageForError("No members found on file. Please start with register a new member.");
             }
             return deserializedMemberlist;
         }
@@ -51,60 +62,50 @@ namespace Controller
                 return true;
             }   catch (Exception)
                 {
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nError! The file was not found. " + FileName + "\n");
-                    Console.ResetColor();
-                    Console.BackgroundColor = ConsoleColor.Green;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.WriteLine("\nNew file created at: " + FileName + "\n");
-                    Console.ResetColor();
                     return false;
                 }
         }
         public void DeleteMemberFromList() 
         {
-            List<Model.Member> viewMemberList = LoadMemberList();
             string id = this._memberView.ReadMemberIDInput("6-character ID on the member to be removed: ");
 
-            for (int i = 0; i < viewMemberList.Count; i++)
+            for (int i = 0; i < this._memberModelList.Count; i++)
             {
-                if (viewMemberList[i].MemberID == id) {
-                    viewMemberList.RemoveAt(i);
-                    this._memberView.successfullyDeleted(viewMemberList[i].Name);
-                    var json = JsonConvert.SerializeObject(viewMemberList, Formatting.Indented);
+                if (this._memberModelList[i].MemberID == id) {
+                    this._memberModelList.RemoveAt(i);
+                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully deleted!");
+                    var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
                     File.WriteAllText(filePath(), json);
                 } else {
-                    if (i == viewMemberList.Count && viewMemberList.Count != 1) 
+                    if (i == this._memberModelList.Count && this._memberModelList.Count != 1) 
                     {
-                        this._memberView.unsuccessfull();
+                        this._memberView.messageForError("No matching member!");
                     }
                 }
             }
         }
         public void UpdateMemberOnList() {
-            List<Model.Member> viewMemberList = LoadMemberList();
             string id = this._memberView.ReadMemberIDInput("6-character ID on the member to be updated: ");
 
-            for (int i = 0; i < viewMemberList.Count; i++)
+            for (int i = 0; i < this._memberModelList.Count; i++)
             {
-                if (viewMemberList[i].MemberID == id) {
-                    viewMemberList.RemoveAt(i);
-                    var json = JsonConvert.SerializeObject(viewMemberList, Formatting.Indented);
+                if (this._memberModelList[i].MemberID == id) {
+                    this._memberModelList.RemoveAt(i);
+                    var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
                     File.WriteAllText(filePath(), json);
                     SaveMemberList();
-                    this._memberView.successfullyUpdated(viewMemberList[i].Name);
+                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully updated!");
                 } else {
-                    if (i == viewMemberList.Count && viewMemberList.Count != 1) 
+                    if (i == this._memberModelList.Count && this._memberModelList.Count != 1) 
                     {
-                        this._memberView.unsuccessfullUpdate();
+                        this._memberView.messageForError("Member not found!");
                     }
                 }
             }
         }
         public string filePath(){
             var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            var path = Path.Combine(systemPath , "files"); // C:\ProgramData\files. Later for app try "YourAppName\\YourApp.exe".
+            var path = Path.Combine(systemPath , "JackSparrowBoatClub"); // C:\ProgramData\files. Later for app try "YourAppName\\YourApp.exe".
             return path;
         }
         public string RandomID(int length = 6)

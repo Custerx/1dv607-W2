@@ -35,12 +35,12 @@ namespace Controller
                 Console.WriteLine(boatOwner.Boats[i].BoatType);
                 if (boatOwner.Boats[i].BoatID == id) 
                 {
-                    this._boatView.successfullyDeletedBoat(boatOwner.Boats[i].BoatType, boatOwner.Boats[i].Length, boatOwner.Boats[i].BoatID);
+                    this._boatView.messageForSuccess("Successfully deleted boat: " + boatOwner.Boats[i].BoatType + " length: " + boatOwner.Boats[i].Length + "m id: " + boatOwner.Boats[i].BoatID);
                     boatOwner.Boats.RemoveAt(i);
                 } else {
                     if (i == boatOwner.Boats.Count) 
                     {
-                        this._boatView.noMatchingBoat();
+                        this._boatView.messageForError("No matching boat!");
                     }
                 }
             }
@@ -53,12 +53,12 @@ namespace Controller
             for (int i = 0; i < viewMemberList.Count; i++)
             {
                 if (viewMemberList[i].MemberID == id) {
-                    this._boatView.successfullyRetrieved(viewMemberList[i].Name);
+                    this._boatView.messageForSuccess("Member " + viewMemberList[i].Name + " successfully retrieved!");
                     deleteBoat(viewMemberList[i]);
                     return viewMemberList;
                 } else {
                     if (i+1 == viewMemberList.Count && viewMemberList.Count != 1) {
-                        this._boatView.noMatchingMember();
+                        this._boatView.messageForError("No matching member!");
                         return viewMemberList;
                     }
                 }
@@ -80,11 +80,11 @@ namespace Controller
                 if (MemberList[i].MemberID == id) 
                 {
                     MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, this._memberController.RandomID()));
-                    this._boatView.successfullyAddedBoat(boatType);
+                    this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully added!");
                 } else {
                     if (i+1 == MemberList.Count && MemberList.Count != 1) 
                     {
-                        this._boatView.unsuccessfull();
+                        this._boatView.messageForError("No matching member!");
                     }
                 }
             }
@@ -102,12 +102,13 @@ namespace Controller
             {
                 if (MemberList[i].MemberID == id) 
                 {
-                    this._boatView.successfullyFoundBoat(MemberList[i].Name);
+                    this._boatView.messageForSuccess("Boat-list successfully retrieved for member: " + MemberList[i].Name);
+
                     return MemberList[i];
                 } else {
                     if (i+1 == MemberList.Count && MemberList.Count != 1) 
                     {
-                        this._boatView.unsuccessfull();
+                        this._boatView.messageForError("No matching member!");
                     }
                 }
             }

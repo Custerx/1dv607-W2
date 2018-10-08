@@ -8,58 +8,33 @@ namespace View
 {
     public class BoatView
     {
-
-        public void unsuccessfull()
+        public string displayBoat(List<Model.Boat> boats)
+        {
+            string displayBoats = "";
+            if (boats.Count > 0)
+            {
+                 foreach (Model.Boat boat in boats)
+                {
+                    displayBoats += boat.BoatType + " on " + boat.Length + "m with Boat-id: " + boat.BoatID + ". " ;
+                }               
+            } else {
+                displayBoats = "No boats registered.";
+            }
+            return displayBoats;
+        }
+        public void messageForError(string message)
         {
             Console.BackgroundColor = ConsoleColor.Red;
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\nNo matching member!\n");
+            Console.WriteLine("\n " + message + " \n");
             Console.ResetColor();
         }
 
-        public void successfullyFoundBoat(string member)
+        public void messageForSuccess(string message)
         {
             Console.BackgroundColor = ConsoleColor.Green;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\nBoat-list successfully retrieved for member: " + member + "\n");
-            Console.ResetColor();
-        }
-
-        public void successfullyAddedBoat(Enums.BoatTypes.Boats boat)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\nBoat " + boat + " successfully added!\n");
-            Console.ResetColor();
-        }
-
-        public void noMatchingMember()
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\nNo matching member!\n");
-            Console.ResetColor();
-        }
-        public void noMatchingBoat()
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\nNo matching boat!\n");
-            Console.ResetColor();
-        }
-        public void successfullyRetrieved(string user)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\nMember " + user + " successfully retrieved!\n");
-            Console.ResetColor();
-        }
-
-        public void successfullyDeletedBoat(Enums.BoatTypes.Boats boat, int length, string boatid)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\nSuccessfully deleted boat: " + boat + " length: " + length + "m id: " + boatid + "\n");
+            Console.WriteLine("\n " + message + " \n");
             Console.ResetColor();
         }
 

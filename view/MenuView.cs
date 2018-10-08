@@ -5,12 +5,15 @@ using System.Linq;
 namespace View
 {
     public class MenuView
-    {     
-        public static void RegisterMember(Controller.MemberController memberController)
-        {
-            memberController.SaveMemberList();
+    {
+        private MemberView _memberView;
+        private BoatView _boatView;
+        public MenuView(MemberView memberView, BoatView boatView) {
+            this._memberView = memberView;
+            this._boatView = boatView;
         }
-        public static void compactList(Controller.MemberController memberController)
+
+        public void compactList(Controller.MemberController memberController)
         {
             List<Model.Member> viewMemberList = memberController.LoadMemberList();
 
@@ -18,12 +21,12 @@ namespace View
             {
                 Console.BackgroundColor = ConsoleColor.Green;
                 Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine("Name: " + viewMemberList[i].Name + " Member-id: " + viewMemberList[i].MemberID + " Boats registered: " + viewMemberList[i].Boats.Count);
+                Console.WriteLine(this._memberView.ToString("Compact", viewMemberList[i]));
                 Console.ResetColor();
             }
         }
 
-        public static void verboseList(Controller.MemberController memberController)
+        public void verboseList(Controller.MemberController memberController)
         {
             List<Model.Member> viewMemberList = memberController.LoadMemberList();
 
@@ -31,47 +34,22 @@ namespace View
             {
                 Console.BackgroundColor = ConsoleColor.Green;
                 Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine("Name: " + viewMemberList[i].Name + " Personal-number: " + viewMemberList[i].PersonalNumber + " Member-id: " + viewMemberList[i].MemberID + " Boats registered: " + viewMemberList[i].Boats.Count);
+                Console.WriteLine(this._memberView.ToString("Verbose", viewMemberList[i]));
                 Console.ResetColor();
             }
         }
-        public static void DeleteMember(Controller.MemberController memberController)
-        {
-            memberController.DeleteMemberFromList();
-        }
 
-        public static void UpdateMember(Controller.MemberController memberController)
-        {
-            memberController.UpdateMemberOnList();
-        }
-
-        public static void DeleteBoat(Controller.BoatController boatController)
-        {
-            boatController.DeleteBoatFromList();
-        }
-
-        public static void RegisterBoat(Controller.BoatController boatController)
-        {
-            boatController.SaveBoatList();
-        }
-        public static void viewAllBoats(Controller.BoatController boatController)
+        public void viewAllBoats(Controller.BoatController boatController)
         {
             Model.Member member = boatController.LoadMemberBoatList();
             List<Model.Boat> viewBoatList = member.Boats;
 
-            for (int i = 0; i < viewBoatList.Count; i++)
-            {
-                if (viewBoatList.Count == 0) 
-                {
-                    Console.WriteLine("User have no boats registrated");
-                }
-                Console.BackgroundColor = ConsoleColor.Green;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine("Boat-type: " + viewBoatList[i].BoatType + " length: " + viewBoatList[i].Length + "m boat-id: " + viewBoatList[i].BoatID);
-                Console.ResetColor();
-            }
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine(this._boatView.displayBoat(viewBoatList));
+            Console.ResetColor();
         }
-        public void ReadMenuInput(View.MemberView memberView, Controller.MemberController memberController, View.BoatView boatView, Controller.BoatController boatController)
+        public int ReadMenuInput()
         {
             string input;
 
@@ -92,19 +70,7 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    if (input == "0")
-                    {
-                        ReadMenuMemberInput(memberView, memberController, boatView, boatController);
-                    } else if (input == "1")
-                    {
-                        ReadMenuBoatInput(memberView, memberController, boatView, boatController);
-                    } else if (input == "2") 
-                    {
-                        ExitMessage();
-                    } else 
-                    {
-                        throw new ApplicationException();
-                    }
+                    return int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -116,7 +82,7 @@ namespace View
             }
         }
 
-        private int ReadMenuBoatInput(View.MemberView memberView, Controller.MemberController memberController, View.BoatView boatView, Controller.BoatController boatController)
+        public int ReadMenuBoatInput()
         {
             string input;
 
@@ -140,25 +106,8 @@ namespace View
                     {
                         throw new ApplicationException();
                     }
-                    if (input == "0")
-                    {
-                        viewAllBoats(boatController);
-                    } else if (input == "1")
-                    {
-                        RegisterBoat(boatController);
-                    } else if (input == "2") 
-                    {
-                        throw new ApplicationException("Update boat not implented yet.");
-                    } else if (input == "3")
-                    {
-                       DeleteBoat(boatController);
-                    } else if (input == "4") 
-                    {
-                        ReadMenuInput(memberView, memberController, boatView, boatController);
-                    } else
-                    {
-                        throw new ApplicationException();
-                    }
+
+                    return int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -169,7 +118,7 @@ namespace View
                 }
             }
         }   
-        private int ReadMenuMemberInput(View.MemberView memberView, Controller.MemberController memberController, View.BoatView boatView, Controller.BoatController boatController)
+        public int ReadMenuMemberInput()
         {
             string input;
 
@@ -194,28 +143,7 @@ namespace View
                         throw new ApplicationException();
                     }
                     
-                    if (input == "0")
-                    {
-                        compactList(memberController);
-                    } else if (input == "1")
-                    {
-                        verboseList(memberController);
-                    } else if (input == "2") 
-                    {
-                        RegisterMember(memberController);
-                    } else if (input == "3")
-                    {
-                        UpdateMember(memberController);
-                    } else if (input == "4") 
-                    {
-                        DeleteMember(memberController);
-                    } else if (input == "5") 
-                    {
-                        ReadMenuInput(memberView, memberController, boatView, boatController);
-                    } else 
-                    {
-                        // throw new ApplicationException();
-                    }
+                    return int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -227,7 +155,7 @@ namespace View
             }
         }
 
-        private static void ExitMessage()
+        public void ExitMessage()
         {
             Console.BackgroundColor = ConsoleColor.Green;
             Console.ForegroundColor = ConsoleColor.Black;

@@ -39,7 +39,7 @@ namespace Model
         public string MemberID { get { return this._memberID;} set { this._memberID = value; } }
 
         public List<Model.Boat> Boats { get; set; }
-
+        
         public Member(string Name, long PersonalNumber, string Id) {
             this.Name = Name;
             this.PersonalNumber = PersonalNumber;

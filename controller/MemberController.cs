@@ -10,32 +10,71 @@ namespace Controller
     {
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
-        public MemberController(View.MemberView memberView)
+        public MemberController()
         {
-            this._memberView = memberView;
+            this._memberView = new View.MemberView();
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
                 this._memberView.messageForSuccess("New file created at: " + base.filePath());
                 this._memberModelList = new List<Model.Member>();
-                this.SaveMemberList();
+                this.registerMemberOnList();
             }
         }
-        public void SaveMemberList() 
+        public void registerMemberOnList() 
         {
             string username = this._memberView.ReadUsernameInput("Chose username: ");
+            
+            if (this.verifyUserName(username))
+            {
+                this._memberView.messageForError("Username already taken.");
+                this.registerMemberOnList();
+            }
+            
             long personalNumber = this._memberView.ReadPersonalnumberInput("Type the personal-number, example [8907076154]: ");
+            string password = this._memberView.ReadMemberPasswordInput("Chose password: ");
 
             if (base.fileExists(base.filePath()) == true)
             {
                 this._memberModelList = base.LoadMemberList();
             }
 
-            this._memberModelList.Add(new Model.Member(username, personalNumber, base.RandomID()));
+            this._memberModelList.Add(new Model.Member(username, personalNumber, base.RandomID(), password));
 
             this._memberView.messageForSuccess("Member successfully registered!");
                 
             var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
             File.WriteAllText(filePath(), json);
+        }
+
+        private bool verifyUserName(string username)
+        {
+            Model.Member member = this._memberView.SearchForMemberByName(username);
+
+            if (member.Password.Equals(username))
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        public void Authorization()
+        {
+            string username = this._memberView.ReadUsernameInput("Username: ");
+            string password = this._memberView.ReadMemberPasswordInput("Password: ");
+
+            Model.Member member = this._memberView.SearchForMemberByName(username);
+            
+            if (member.Password.Equals(password))
+            {
+                this._memberView.messageForSuccess("Welcome!" + username + ".");
+                Console.WriteLine("User authorized.");
+            } else
+            {
+                this._memberView.messageForError("Wrong username or password.");
+
+            }
         }
 
         public void DeleteMemberFromList() 
@@ -66,7 +105,7 @@ namespace Controller
                     this._memberModelList.RemoveAt(i);
                     var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
                     File.WriteAllText(base.filePath(), json);
-                    SaveMemberList();
+                    this.registerMemberOnList();
                     this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully updated!");
                 } else {
                     if (i == this._memberModelList.Count && this._memberModelList.Count != 1) 

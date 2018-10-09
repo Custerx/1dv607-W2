@@ -4,7 +4,7 @@ namespace View
 {
     public interface ISearchView
     {
-        string getInputSearchString();
+        Model.Member getMemberByName(Model.SearchMember searchCriteria);
         Model.Member getMemberById(Model.SearchMember searchCriteria);
         List<Model.Member> getListMemberByAge(Model.SearchMember searchCriteria);
     }

@@ -7,49 +7,85 @@ using Newtonsoft.Json;
 
 namespace View
 {
-    public class MemberView
+    
+    public class MemberView : ISearchView
     {
-        public void Authorization()
+        private Controller.MemberController _memberController;
+
+        public MemberView()
         {
-            string username = this.ReadUsernameInput("Username: ");
-            string id = this.ReadMemberPasswordInput("Password: ");
+            this._memberController = new Controller.MemberController();
+        }
+        public Model.Member getMemberByName(Model.SearchMember searchCriteria)
+        {
+            List<Model.Member> memberList = this._memberController.LoadMemberList();
+
+            foreach(var Member in memberList.Where(member => member.Name.Equals(searchCriteria)))
+            {
+                return Member;
+            }
+
+            return null;
         }
 
-        public void compactList(Controller.MemberController memberController)
+        public Model.Member getMemberById(Model.SearchMember searchCriteria)
         {
-            List<Model.Member> viewMemberList = memberController.LoadMemberList();
+            List<Model.Member> memberList = this._memberController.LoadMemberList();
 
-            for (int i = 0; i < viewMemberList.Count; i++)
+            foreach(var Member in memberList.Where(member => member.MemberID.Equals(searchCriteria)))
+            {
+                return Member;
+            }
+
+            return null;
+        }
+        public List<Model.Member> getListMemberByAge(Model.SearchMember searchCriteria)
+        {
+            List<Model.Member> memberList = this._memberController.LoadMemberList();
+            List<Model.Member> memberListByAge = new List<Model.Member>();
+
+            foreach(var Member in memberList.Where(member => member.PersonalNumber.Equals(searchCriteria)))
+            {
+                memberListByAge.Add(Member);
+            }
+
+            return memberListByAge;
+        }
+        public Model.Member SearchForMemberByName(string name)
+        {
+            Model.Member Member = this.getMemberByName(new Model.SearchMember{Name = name});
+            return Member;
+        }
+
+        public void SearchForMembersByAge(int personalNumber)
+        {
+            List<Model.Member> memberList = this.getListMemberByAge(new Model.SearchMember{PersonalNumber = personalNumber});
+        }
+
+        public void compactList()
+        {
+            List<Model.Member> memberList = this._memberController.LoadMemberList();
+
+            for (int i = 0; i < memberList.Count; i++)
             {
                 Console.BackgroundColor = ConsoleColor.Green;
                 Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine(this.ToString("Compact", viewMemberList[i]));
+                Console.WriteLine(this.ToString("Compact", memberList[i]));
                 Console.ResetColor();
             }
         }
 
-        public void verboseList(Controller.MemberController memberController)
+        public void verboseList()
         {
-            List<Model.Member> viewMemberList = memberController.LoadMemberList();
+            List<Model.Member> memberList = this._memberController.LoadMemberList();
 
-            for (int i = 0; i < viewMemberList.Count; i++)
+            for (int i = 0; i < memberList.Count; i++)
             {
                 Console.BackgroundColor = ConsoleColor.Green;
                 Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine(this.ToString("Verbose", viewMemberList[i]));
+                Console.WriteLine(this.ToString("Verbose", memberList[i]));
                 Console.ResetColor();
             }
-        }
-
-        public void viewAllBoats(Controller.BoatController boatController)
-        {
-            Model.Member member = boatController.LoadMemberBoatList();
-            List<Model.Boat> viewBoatList = member.Boats;
-
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine(this.displayBoat(viewBoatList));
-            Console.ResetColor();
         }
 
         private string ToString(string format, Model.Member member) 

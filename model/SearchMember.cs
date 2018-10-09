@@ -8,5 +8,6 @@ namespace Model
         public long PersonalNumber {get; set;}
         public string MemberID {get; set;}
         public List<Model.Boat> Boats { get; set; }
+        public int Password { get; set; }
     }
 }

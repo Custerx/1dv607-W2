@@ -11,11 +11,11 @@ namespace Controller
         private Controller.MemberController _memberController;
         private Controller.BoatController _boatController;
 
-        public MasterController() {
+        public BoatClubController() {
             this._boatView = new View.BoatView();
             this._memberView = new View.MemberView();
             this._menuView = new View.MenuView();
-            this._memberController = new Controller.MemberController(this._memberView);
+            this._memberController = new Controller.MemberController();
             this._boatController = new Controller.BoatController(this._boatView);
         }
 
@@ -42,7 +42,7 @@ namespace Controller
 
             if (userPreviousChoice == 2)
             {
-                this._memberView.Authorization();
+                this._memberController.Authorization();
             }
 
             if (userPreviousChoice == 3)
@@ -55,25 +55,20 @@ namespace Controller
         {
             if (userPreviousChoice == 0)
             {
-                this._memberView.viewAllBoats(this._boatController);
+                this._boatController.SaveBoatList();
             }
 
             if (userPreviousChoice == 1)
             {
-                this._boatController.SaveBoatList();
+                this._boatController.deleteOrUpdateBoatFromList("Update");
             }
 
             if (userPreviousChoice == 2)
             {
-                this._boatController.deleteOrUpdateBoatFromList("Update");
-            }
-
-            if (userPreviousChoice == 3)
-            {
                 this._boatController.deleteOrUpdateBoatFromList("Delete");
             }
 
-            if (userPreviousChoice == 4)
+            if (userPreviousChoice == 3)
             {
                 this.Run(); // Display start menu.
             }
@@ -85,17 +80,17 @@ namespace Controller
         {
             if (userPreviousChoice == 0)
             {
-                this._memberView.compactList(this._memberController);
+                this._memberView.compactList();
             } 
             
             if (userPreviousChoice == 1)
             {
-                this._memberView.verboseList(this._memberController);
+                this._memberView.verboseList();
             }   
             
-            if (userPreviousChoice == 2) // Register member.
+            if (userPreviousChoice == 2)
             {
-                this._memberController.SaveMemberList();
+                this._memberController.registerMemberOnList();
             }   
             
             if (userPreviousChoice == 3)

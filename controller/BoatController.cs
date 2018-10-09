@@ -128,27 +128,5 @@ namespace Controller
             var json = JsonConvert.SerializeObject(MemberList, Formatting.Indented);
             File.WriteAllText(base.filePath(), json);
         }
-
-        public Model.Member LoadMemberBoatList() 
-        {
-            List<Model.Member> MemberList = base.LoadMemberList();
-            string id = this._boatView.ReadIDInput("Your 6-character ID: ");
-
-            for (int i = 0; i < MemberList.Count; i++)
-            {
-                if (MemberList[i].MemberID == id) 
-                {
-                    this._boatView.messageForSuccess("Boat-list successfully retrieved for member: " + MemberList[i].Name);
-
-                    return MemberList[i];
-                } else {
-                    if (i+1 == MemberList.Count && MemberList.Count != 1) 
-                    {
-                        this._boatView.messageForError("No matching member!");
-                    }
-                }
-            }
-            return null;
-        }
     }
 }

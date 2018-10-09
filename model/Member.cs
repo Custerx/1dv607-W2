@@ -9,6 +9,7 @@ namespace Model
         private string _name;
         private long _personalNumber;
         private string _memberID;
+        private string _password;
 
         public string Name 
         { 
@@ -39,12 +40,26 @@ namespace Model
         public string MemberID { get { return this._memberID;} set { this._memberID = value; } }
 
         public List<Model.Boat> Boats { get; set; }
+
+        public string Password
+        { 
+            get => _password; 
+            set 
+            {
+                if (value.Length < 6)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+                _password = value;
+            }            
+        }
         
-        public Member(string Name, long PersonalNumber, string Id) {
+        public Member(string Name, long PersonalNumber, string Id, string Password) {
             this.Name = Name;
             this.PersonalNumber = PersonalNumber;
             this._memberID = Id;
             Boats = new List<Model.Boat>();
+            this.Password = Password;
         }
     }
 }

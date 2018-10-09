@@ -10,13 +10,17 @@ namespace Controller
     {
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
-        public MemberController()
+        public MemberController(View.MemberView memberView)
         {
-            this._memberView = new View.MemberView();
+            this._memberView = memberView;
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
-                this._memberView.messageForSuccess("New file created at: " + base.filePath());
                 this._memberModelList = new List<Model.Member>();
+                var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
+                File.WriteAllText(filePath(), json);
+
+                this._memberView.messageForSuccess("New file created at: " + base.filePath());
+                
                 this.registerMemberOnList();
             }
         }
@@ -24,7 +28,7 @@ namespace Controller
         {
             string username = this._memberView.ReadUsernameInput("Chose username: ");
             
-            if (this.verifyUserName(username))
+            if (this.verifyUserName(username) == true)
             {
                 this._memberView.messageForError("Username already taken.");
                 this.registerMemberOnList();
@@ -45,12 +49,28 @@ namespace Controller
             var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
             File.WriteAllText(filePath(), json);
         }
+        private Model.Member SearchForMemberByName(string name)
+        {
+            Model.Member Member = base.getMemberByName(new Model.SearchMember{Name = name});
+            return Member;
+        }
+
+        private List<Model.Member> SearchForMembersByAge(int personalNumber)
+        {
+            List<Model.Member> memberList = base.getListMemberByAge(new Model.SearchMember{PersonalNumber = personalNumber});
+            return memberList;
+        }
 
         private bool verifyUserName(string username)
         {
-            Model.Member member = this._memberView.SearchForMemberByName(username);
-
-            if (member.Password.Equals(username))
+            Model.Member member = this.SearchForMemberByName(username);
+            
+            if (member == null)
+            {
+                return false;
+            } 
+            
+            if (member.Name.Equals(username))
             {
                 return true;
             } else
@@ -64,16 +84,17 @@ namespace Controller
             string username = this._memberView.ReadUsernameInput("Username: ");
             string password = this._memberView.ReadMemberPasswordInput("Password: ");
 
-            Model.Member member = this._memberView.SearchForMemberByName(username);
-            
-            if (member.Password.Equals(password))
+            Model.Member member = this.SearchForMemberByName(username);
+
+            if (member == null)
             {
-                this._memberView.messageForSuccess("Welcome!" + username + ".");
-                Console.WriteLine("User authorized.");
+                this._memberView.messageForError("Wrong username or password.");
+            } else if (member.Password.Equals(password))
+            {
+                this._memberView.messageForSuccess("Welcome " + username + "!");
             } else
             {
                 this._memberView.messageForError("Wrong username or password.");
-
             }
         }
 

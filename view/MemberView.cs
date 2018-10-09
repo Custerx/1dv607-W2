@@ -8,63 +8,11 @@ using Newtonsoft.Json;
 namespace View
 {
     
-    public class MemberView : ISearchView
+    public class MemberView : Controller.FileController
     {
-        private Controller.MemberController _memberController;
-
-        public MemberView()
-        {
-            this._memberController = new Controller.MemberController();
-        }
-        public Model.Member getMemberByName(Model.SearchMember searchCriteria)
-        {
-            List<Model.Member> memberList = this._memberController.LoadMemberList();
-
-            foreach(var Member in memberList.Where(member => member.Name.Equals(searchCriteria)))
-            {
-                return Member;
-            }
-
-            return null;
-        }
-
-        public Model.Member getMemberById(Model.SearchMember searchCriteria)
-        {
-            List<Model.Member> memberList = this._memberController.LoadMemberList();
-
-            foreach(var Member in memberList.Where(member => member.MemberID.Equals(searchCriteria)))
-            {
-                return Member;
-            }
-
-            return null;
-        }
-        public List<Model.Member> getListMemberByAge(Model.SearchMember searchCriteria)
-        {
-            List<Model.Member> memberList = this._memberController.LoadMemberList();
-            List<Model.Member> memberListByAge = new List<Model.Member>();
-
-            foreach(var Member in memberList.Where(member => member.PersonalNumber.Equals(searchCriteria)))
-            {
-                memberListByAge.Add(Member);
-            }
-
-            return memberListByAge;
-        }
-        public Model.Member SearchForMemberByName(string name)
-        {
-            Model.Member Member = this.getMemberByName(new Model.SearchMember{Name = name});
-            return Member;
-        }
-
-        public void SearchForMembersByAge(int personalNumber)
-        {
-            List<Model.Member> memberList = this.getListMemberByAge(new Model.SearchMember{PersonalNumber = personalNumber});
-        }
-
         public void compactList()
         {
-            List<Model.Member> memberList = this._memberController.LoadMemberList();
+            List<Model.Member> memberList = base.LoadMemberList();
 
             for (int i = 0; i < memberList.Count; i++)
             {
@@ -77,7 +25,7 @@ namespace View
 
         public void verboseList()
         {
-            List<Model.Member> memberList = this._memberController.LoadMemberList();
+            List<Model.Member> memberList = base.LoadMemberList();
 
             for (int i = 0; i < memberList.Count; i++)
             {

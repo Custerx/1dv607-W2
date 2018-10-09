@@ -6,10 +6,46 @@ using Newtonsoft.Json;
 
 namespace Controller
 {
-    public abstract class FileController
+    public abstract class FileController : ISearchController
     {
         private static Random random = new Random();
 
+        public Model.Member getMemberByName(Model.SearchMember searchCriteria)
+        {
+            List<Model.Member> memberList = this.LoadMemberList();
+
+            foreach(var Member in memberList.Where(member => member.Name.Equals(searchCriteria.Name)))
+            {
+                return Member;
+            }
+
+            return null;
+        }
+
+        public Model.Member getMemberById(Model.SearchMember searchCriteria)
+        {
+            List<Model.Member> memberList = this.LoadMemberList();
+
+            foreach(var Member in memberList.Where(member => member.MemberID.Equals(searchCriteria.MemberID)))
+            {
+                return Member;
+            }
+
+            return null;
+        }
+        public List<Model.Member> getListMemberByAge(Model.SearchMember searchCriteria)
+        {
+            List<Model.Member> memberList = this.LoadMemberList();
+            List<Model.Member> memberListByAge = new List<Model.Member>();
+
+            foreach(var Member in memberList.Where(member => member.PersonalNumber.Equals(searchCriteria.PersonalNumber)))
+            {
+                memberListByAge.Add(Member);
+            }
+
+            return memberListByAge;
+        }
+        
         public List<Model.Member> LoadMemberList() 
         {
             List<Model.Member> deserializedMemberlist = JsonConvert.DeserializeObject<List<Model.Member>>(File.ReadAllText(@filePath()));

@@ -15,7 +15,7 @@ namespace Controller
             this._boatView = new View.BoatView();
             this._memberView = new View.MemberView();
             this._menuView = new View.MenuView();
-            this._memberController = new Controller.MemberController();
+            this._memberController = new Controller.MemberController(this._memberView);
             this._boatController = new Controller.BoatController(this._boatView);
         }
 
@@ -49,6 +49,8 @@ namespace Controller
             {
                 this._menuView.ExitMessage();
             }
+
+            this.Run();
         }
 
         private void boatNavigation(int userPreviousChoice)

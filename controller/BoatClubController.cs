@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Controller
 {
-    public class MasterController
+    public class BoatClubController
     {
         private View.MemberView _memberView;
         private View.BoatView _boatView;

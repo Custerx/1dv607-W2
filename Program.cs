@@ -8,7 +8,7 @@ namespace w2
     {
         static void Main(string[] args)
         {
-            Controller.MasterController BoatClub = new Controller.MasterController();          
+            Controller.BoatClubController BoatClub = new Controller.BoatClubController();          
             BoatClub.Run();
         }
     }

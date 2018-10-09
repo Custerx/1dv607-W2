@@ -5,30 +5,27 @@ using Newtonsoft.Json;
 
 namespace Controller
 {
-    public class BoatController
+    public class BoatController : FileController
     {
         private View.BoatView _boatView;
-        private View.MemberView _memberView;
-        private Controller.MemberController _memberController;
-        public BoatController(View.BoatView boatView, View.MemberView memberView, Controller.MemberController memberController)
+
+        public BoatController(View.BoatView boatView)
         {
             this._boatView = boatView;
-            this._memberView = memberView;
-            this._memberController = memberController;
         }
 
         public void deleteOrUpdateBoatFromList(string action) 
         {
-            List<Model.Member> viewMemberList = this._memberController.LoadMemberList();
+            List<Model.Member> viewMemberList = base.LoadMemberList();
 
             viewMemberList = editMemberDetails(viewMemberList, action);
 
             var json = JsonConvert.SerializeObject(viewMemberList, Formatting.Indented);
-            File.WriteAllText(this._memberController.filePath(), json);
+            File.WriteAllText(base.filePath(), json);
         }
         private Model.Boat deleteBoat(Model.Member boatOwner)
         {
-            string id = this._boatView.ReadBoatIDInput("Type the ID of the boat you want to delete: ");
+            string id = this._boatView.ReadIDInput("Type the ID of the boat you want to delete: ");
             
             for (int i = 0; i < boatOwner.Boats.Count; i++)
             {
@@ -48,7 +45,7 @@ namespace Controller
 
         private Model.Boat updateBoat(Model.Member boatOwner)
         {
-            string id = this._boatView.ReadBoatIDInput("Type the ID of the boat you want to update: ");
+            string id = this._boatView.ReadIDInput("Type the ID of the boat you want to update: ");
             
             for (int i = 0; i < boatOwner.Boats.Count; i++)
             {
@@ -71,13 +68,13 @@ namespace Controller
             int boatTypeAsNumber = this._boatView.ReadBoatTypeInput();
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
             int boatLength = this._boatView.ReadBoatLengthInput();
-            boatOwner.Boats.Add(new Model.Boat(boatType, boatLength, this._memberController.RandomID()));
+            boatOwner.Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
             this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully updated!");
             return boatOwner;
         }
         private List<Model.Member> editMemberDetails(List<Model.Member> viewMemberList, string action)
         {
-            string id = this._memberView.ReadMemberIDInput("The boat owner's 6-character ID: ");
+            string id = this._boatView.ReadIDInput("The boat owner's 6-character ID: ");
 
             for (int i = 0; i < viewMemberList.Count; i++)
             {
@@ -107,18 +104,18 @@ namespace Controller
 
         public void SaveBoatList() 
         {
-            string id = this._memberView.ReadMemberIDInput("Your 6-character ID: ");
+            string id = this._boatView.ReadIDInput("Your 6-character ID: ");
             int boatTypeAsNumber = this._boatView.ReadBoatTypeInput();
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
             int boatLength = this._boatView.ReadBoatLengthInput();
 
-            List<Model.Member> MemberList = this._memberController.fileExists(this._memberController.filePath()) == true ? this._memberController.LoadMemberList() : new List<Model.Member>();
+            List<Model.Member> MemberList = base.fileExists(base.filePath()) == true ? base.LoadMemberList() : new List<Model.Member>();
 
             for (int i = 0; i < MemberList.Count; i++)
             {
                 if (MemberList[i].MemberID == id) 
                 {
-                    MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, this._memberController.RandomID()));
+                    MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
                     this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully added!");
                 } else {
                     if (i+1 == MemberList.Count && MemberList.Count != 1) 
@@ -129,13 +126,13 @@ namespace Controller
             }
                 
             var json = JsonConvert.SerializeObject(MemberList, Formatting.Indented);
-            File.WriteAllText(this._memberController.filePath(), json);
+            File.WriteAllText(base.filePath(), json);
         }
 
         public Model.Member LoadMemberBoatList() 
         {
-            List<Model.Member> MemberList = this._memberController.LoadMemberList();
-            string id = this._memberView.ReadMemberIDInput("Your 6-character ID: ");
+            List<Model.Member> MemberList = base.LoadMemberList();
+            string id = this._boatView.ReadIDInput("Your 6-character ID: ");
 
             for (int i = 0; i < MemberList.Count; i++)
             {

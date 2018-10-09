@@ -13,10 +13,10 @@ namespace Controller
 
         public MasterController() {
             this._boatView = new View.BoatView();
-            this._memberView = new View.MemberView(this._boatView);
-            this._menuView = new View.MenuView(this._memberView, this._boatView);
+            this._memberView = new View.MemberView();
+            this._menuView = new View.MenuView();
             this._memberController = new Controller.MemberController(this._memberView);
-            this._boatController = new Controller.BoatController(this._boatView, this._memberView, this._memberController);
+            this._boatController = new Controller.BoatController(this._boatView);
         }
 
         public void Run()
@@ -42,6 +42,11 @@ namespace Controller
 
             if (userPreviousChoice == 2)
             {
+                this._memberView.Authorization();
+            }
+
+            if (userPreviousChoice == 3)
+            {
                 this._menuView.ExitMessage();
             }
         }
@@ -50,7 +55,7 @@ namespace Controller
         {
             if (userPreviousChoice == 0)
             {
-                this._menuView.viewAllBoats(this._boatController);
+                this._memberView.viewAllBoats(this._boatController);
             }
 
             if (userPreviousChoice == 1)
@@ -80,12 +85,12 @@ namespace Controller
         {
             if (userPreviousChoice == 0)
             {
-                this._menuView.compactList(this._memberController);
+                this._memberView.compactList(this._memberController);
             } 
             
             if (userPreviousChoice == 1)
             {
-                this._menuView.verboseList(this._memberController);
+                this._memberView.verboseList(this._memberController);
             }   
             
             if (userPreviousChoice == 2) // Register member.

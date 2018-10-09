@@ -8,20 +8,6 @@ namespace View
 {
     public class BoatView
     {
-        public string displayBoat(List<Model.Boat> boats)
-        {
-            string displayBoats = "";
-            if (boats.Count > 0)
-            {
-                 foreach (Model.Boat boat in boats)
-                {
-                    displayBoats += boat.BoatType + " on " + boat.Length + "m with Boat-id: " + boat.BoatID + ". " ;
-                }               
-            } else {
-                displayBoats = "No boats registered.";
-            }
-            return displayBoats;
-        }
         public void messageForError(string message)
         {
             Console.BackgroundColor = ConsoleColor.Red;
@@ -38,7 +24,7 @@ namespace View
             Console.ResetColor();
         }
 
-        public string ReadBoatIDInput(string message)
+        public string ReadIDInput(string message)
         {
             string input;
 
@@ -60,7 +46,7 @@ namespace View
                     {
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nError! Boat-ID must contain 6 characters.\n");
+                    Console.WriteLine("\nError! ID must contain 6 characters.\n");
                     Console.ResetColor();
                 }
             }

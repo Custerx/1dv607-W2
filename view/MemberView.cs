@@ -2,28 +2,81 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace View
 {
     public class MemberView
     {
-        private BoatView _boatView;
-        public MemberView(BoatView boatView)
+        public void Authorization()
         {
-            this._boatView = boatView;
+            string username = this.ReadUsernameInput("Username: ");
+            string id = this.ReadMemberPasswordInput("Password: ");
         }
 
-        public string ToString(string format, Model.Member member) 
+        public void compactList(Controller.MemberController memberController)
+        {
+            List<Model.Member> viewMemberList = memberController.LoadMemberList();
+
+            for (int i = 0; i < viewMemberList.Count; i++)
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine(this.ToString("Compact", viewMemberList[i]));
+                Console.ResetColor();
+            }
+        }
+
+        public void verboseList(Controller.MemberController memberController)
+        {
+            List<Model.Member> viewMemberList = memberController.LoadMemberList();
+
+            for (int i = 0; i < viewMemberList.Count; i++)
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine(this.ToString("Verbose", viewMemberList[i]));
+                Console.ResetColor();
+            }
+        }
+
+        public void viewAllBoats(Controller.BoatController boatController)
+        {
+            Model.Member member = boatController.LoadMemberBoatList();
+            List<Model.Boat> viewBoatList = member.Boats;
+
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine(this.displayBoat(viewBoatList));
+            Console.ResetColor();
+        }
+
+        private string ToString(string format, Model.Member member) 
         {
             if (format == "Verbose" || format.Length == 0 || format == null) 
             {     
-                return string.Join(" ", "Name: " + member.Name, "Personal-number: " + member.PersonalNumber, "Member-id: " + member.MemberID, "Boats: " + this._boatView.displayBoat(member.Boats));
+                return string.Join(" ", "Name: " + member.Name, "Personal-number: " + member.PersonalNumber, "Member-id: " + member.MemberID, "Boats: " + this.displayBoat(member.Boats));
             }
             if (format == "Compact") {
                 return string.Join(" ", "Name: " + member.Name, "Member-id: " + member.MemberID, "Boats: " + member.Boats.Count + ".");
             }
             throw new FormatException(nameof(format));
+        }
+
+        private string displayBoat(List<Model.Boat> boats)
+        {
+            string displayBoats = "";
+            if (boats.Count > 0)
+            {
+                 foreach (Model.Boat boat in boats)
+                {
+                    displayBoats += boat.BoatType + " on " + boat.Length + "m with Boat-id: " + boat.BoatID + ". " ;
+                }               
+            } else {
+                displayBoats = "No boats registered.";
+            }
+            return displayBoats;
         }
 
         public void messageForError(string message)
@@ -130,6 +183,41 @@ namespace View
                     Console.ResetColor();
                 }
             }
+        }
+
+        public string ReadMemberPasswordInput(string message)
+        {
+            string input;
+
+            while (true)
+            {
+                try
+                {
+                    Console.Write(message);
+                    input = Console.ReadLine();
+
+                    StripHTML(input);
+
+                    if (input.Length > 24 || input.Length < 6)
+                    {
+                        throw new ApplicationException("\nPassword has too few characters, at least 6 characters.\n");
+                    }
+
+                    return input;
+                    }
+                    catch (Exception)
+                    {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("\nPassword has too few characters, at least 6 characters.\n");
+                    Console.ResetColor();
+                }
+            }
+        }
+
+        private static string StripHTML(string input)
+        {
+            return Regex.Replace(input, "<.*?>", String.Empty);
         }
     }
 }

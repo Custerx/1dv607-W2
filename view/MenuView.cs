@@ -6,49 +6,6 @@ namespace View
 {
     public class MenuView
     {
-        private MemberView _memberView;
-        private BoatView _boatView;
-        public MenuView(MemberView memberView, BoatView boatView) {
-            this._memberView = memberView;
-            this._boatView = boatView;
-        }
-
-        public void compactList(Controller.MemberController memberController)
-        {
-            List<Model.Member> viewMemberList = memberController.LoadMemberList();
-
-            for (int i = 0; i < viewMemberList.Count; i++)
-            {
-                Console.BackgroundColor = ConsoleColor.Green;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine(this._memberView.ToString("Compact", viewMemberList[i]));
-                Console.ResetColor();
-            }
-        }
-
-        public void verboseList(Controller.MemberController memberController)
-        {
-            List<Model.Member> viewMemberList = memberController.LoadMemberList();
-
-            for (int i = 0; i < viewMemberList.Count; i++)
-            {
-                Console.BackgroundColor = ConsoleColor.Green;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.WriteLine(this._memberView.ToString("Verbose", viewMemberList[i]));
-                Console.ResetColor();
-            }
-        }
-
-        public void viewAllBoats(Controller.BoatController boatController)
-        {
-            Model.Member member = boatController.LoadMemberBoatList();
-            List<Model.Boat> viewBoatList = member.Boats;
-
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine(this._boatView.displayBoat(viewBoatList));
-            Console.ResetColor();
-        }
         public int ReadMenuInput()
         {
             string input;
@@ -60,12 +17,12 @@ namespace View
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("Welcome to Jack Sparrow's Boatclub!");
-                    Console.WriteLine("\nMenu: [0] = [Member], [1] = [Boat], [2] = [Exit]. Navigate with a number between 0 and 2.\n");
+                    Console.WriteLine("\nMenu: [0] = [Member], [1] = [Boat], [2] = [Login], [3] = [Exit]. Navigate with a number between 0 and 2.\n");
                     Console.ResetColor();
 
                     input = Console.ReadLine();
 
-                    if (!input.All(c => c >= '0' && c <= '2'))
+                    if (!input.All(c => c >= '0' && c <= '3'))
                     {
                         throw new ApplicationException();
                     }
@@ -76,7 +33,7 @@ namespace View
                 {
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nError! Your choice must contain 1 number between 0 and 2.\n");
+                    Console.WriteLine("\nError! Your choice must contain 1 number between 0 and 3.\n");
                     Console.ResetColor();
                 }
             }

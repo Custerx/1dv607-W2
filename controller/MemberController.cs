@@ -44,7 +44,7 @@ namespace Controller
 
             this._memberModelList.Add(new Model.Member(username, personalNumber, base.RandomID(), password));
 
-            this._memberView.messageForSuccess("Member successfully registered!");
+            this._memberView.messageForSuccess("Member successfully registered! Please login.");
                 
             var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
             File.WriteAllText(filePath(), json);
@@ -79,7 +79,7 @@ namespace Controller
             }
         }
 
-        public void Authorization()
+        public int Authorization()
         {
             string username = this._memberView.ReadUsernameInput("Username: ");
             string password = this._memberView.ReadMemberPasswordInput("Password: ");
@@ -89,12 +89,15 @@ namespace Controller
             if (member == null)
             {
                 this._memberView.messageForError("Wrong username or password.");
+                return 0;
             } else if (member.Password.Equals(password))
             {
                 this._memberView.messageForSuccess("Welcome " + username + "!");
+                return 1;
             } else
             {
                 this._memberView.messageForError("Wrong username or password.");
+                return 0;
             }
         }
 

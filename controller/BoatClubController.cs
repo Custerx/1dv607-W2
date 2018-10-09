@@ -21,8 +21,42 @@ namespace Controller
 
         public void Run()
         {          
-            int userNavigationChoice = this._menuView.ReadMenuInput();
-            this.Navigation(userNavigationChoice);
+            int userNavigationChoice = this._menuView.getAuthorizationMenuInput();
+            this.AuthorizationNavigation(userNavigationChoice);
+        }
+
+        private void AuthorizationNavigation(int userPreviousChoice)
+        {
+            int userNavigationChoice = 0;
+            
+            if (userPreviousChoice == 0)
+            {
+                userNavigationChoice = this._memberController.Authorization();
+            }
+
+            if (userPreviousChoice == 1)
+            {
+                this._memberController.registerMemberOnList();
+            }
+
+            if (userPreviousChoice == 2) // Guest
+            {
+                
+            }
+
+            if (userPreviousChoice == 3)
+            {
+                this._menuView.ExitMessage();
+            }
+
+            if (userNavigationChoice == 1) // Authorized user.
+            {
+                userNavigationChoice = this._menuView.getNavigationMenuInput();
+                this.Navigation(userNavigationChoice);
+            } else
+            {
+                this.Run();
+            }
         }
 
         private void Navigation(int userPreviousChoice)
@@ -42,15 +76,10 @@ namespace Controller
 
             if (userPreviousChoice == 2)
             {
-                this._memberController.Authorization();
-            }
-
-            if (userPreviousChoice == 3)
-            {
                 this._menuView.ExitMessage();
             }
 
-            this.Run();
+            this.Run(); // Display start menu.
         }
 
         private void boatNavigation(int userPreviousChoice)
@@ -92,20 +121,15 @@ namespace Controller
             
             if (userPreviousChoice == 2)
             {
-                this._memberController.registerMemberOnList();
+                this._memberController.UpdateMemberOnList();
             }   
             
             if (userPreviousChoice == 3)
             {
-                this._memberController.UpdateMemberOnList();
-            }   
-            
-            if (userPreviousChoice == 4)
-            {
                 this._memberController.DeleteMemberFromList();
             }  
             
-            if (userPreviousChoice == 5)
+            if (userPreviousChoice == 4)
             {
                 this.Run(); // Display start-menu.
             }

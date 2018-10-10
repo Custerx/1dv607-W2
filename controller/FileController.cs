@@ -8,7 +8,7 @@ namespace Controller
 {
     public abstract class FileController : ISearchController
     {
-        private static Random random = new Random();
+        private static Random random = new Random();    
 
         public Model.Member getMemberByName(Model.SearchMember searchCriteria)
         {
@@ -44,6 +44,19 @@ namespace Controller
             }
 
             return memberListByAge;
+        }
+
+        public List<Model.Member> getListMemberByName(Model.SearchMember searchCriteria)
+        {
+            List<Model.Member> memberList = this.LoadMemberList();
+            List<Model.Member> memberListByName = new List<Model.Member>();
+
+            foreach(var Member in memberList.Where(member => member.Name.ToLower().Contains(searchCriteria.SearchString.ToLower())))
+            {
+                memberListByName.Add(Member);
+            }
+
+            return memberListByName;
         }
         
         public List<Model.Member> LoadMemberList() 

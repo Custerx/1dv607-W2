@@ -8,8 +8,21 @@ namespace Controller
 {
     public class MemberController : FileController
     {
+        private string _memberID;
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
+        public string MemberID
+        { 
+            get => _memberID; 
+            private set 
+            {
+                if (value.Length != 6)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+                _memberID = value;
+            }            
+        }
         public MemberController(View.MemberView memberView)
         {
             this._memberView = memberView;
@@ -24,6 +37,18 @@ namespace Controller
                 this.registerMemberOnList();
             }
         }
+
+        public void verboseList()
+        {
+            List<Model.Member> memberList = base.LoadMemberList();
+            this._memberView.viewVerboseList(memberList);
+        }
+
+        public void compactList()
+        {
+            List<Model.Member> memberList = base.LoadMemberList();
+            this._memberView.viewCompactList(memberList);
+        }
         public void registerMemberOnList() 
         {
             string username = this._memberView.ReadUsernameInput("Chose username: ");
@@ -32,23 +57,25 @@ namespace Controller
             {
                 this._memberView.messageForError("Username already taken.");
                 this.registerMemberOnList();
+                return;
             }
-            
-            long personalNumber = this._memberView.ReadPersonalnumberInput("Type the personal-number, example [8907076154]: ");
-            string password = this._memberView.ReadMemberPasswordInput("Chose password: ");
 
             if (base.fileExists(base.filePath()) == true)
             {
                 this._memberModelList = base.LoadMemberList();
             }
 
-            this._memberModelList.Add(new Model.Member(username, personalNumber, base.RandomID(), password));
+            long personalNumber = this._memberView.ReadPersonalnumberInput("Type the personal-number, example [8907076154]: ");
+            string password = this._memberView.ReadMemberPasswordInput("Chose password: ");
 
+            this._memberModelList.Add(new Model.Member(username, personalNumber, base.RandomID(), password));
+            
             this._memberView.messageForSuccess("Member successfully registered! Please login.");
                 
             var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
             File.WriteAllText(filePath(), json);
         }
+
         private Model.Member SearchForMemberByName(string name)
         {
             Model.Member Member = base.getMemberByName(new Model.SearchMember{Name = name});
@@ -59,6 +86,20 @@ namespace Controller
         {
             List<Model.Member> memberList = base.getListMemberByAge(new Model.SearchMember{PersonalNumber = personalNumber});
             return memberList;
+        }
+
+        public void SearchAndDisplayMembersByName()
+        {
+            string searchString = this._memberView.getSearchInput("Get all username with character(s): ");
+            List<Model.Member> memberList = base.getListMemberByName(new Model.SearchMember{SearchString = searchString});
+
+            if (memberList.Count < 1)
+            {
+                this._memberView.messageForError("No username matched with your character(s).");
+                return;
+            }
+
+            this._memberView.viewCompactList(memberList);
         }
 
         private bool verifyUserName(string username)
@@ -93,6 +134,7 @@ namespace Controller
             } else if (member.Password.Equals(password))
             {
                 this._memberView.messageForSuccess("Welcome " + username + "!");
+                this.MemberID = member.MemberID;
                 return 1;
             } else
             {
@@ -103,7 +145,12 @@ namespace Controller
 
         public void DeleteMemberFromList() 
         {
-            string id = this._memberView.ReadMemberIDInput("6-character ID on the member to be removed: ");
+            string id = this._memberView.ReadMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
+
+            if (base.fileExists(base.filePath()) == true)
+            {
+                this._memberModelList = base.LoadMemberList();
+            }
 
             for (int i = 0; i < this._memberModelList.Count; i++)
             {
@@ -112,16 +159,19 @@ namespace Controller
                     this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully deleted!");
                     var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
                     File.WriteAllText(base.filePath(), json);
-                } else {
-                    if (i == this._memberModelList.Count && this._memberModelList.Count != 1) 
-                    {
-                        this._memberView.messageForError("No matching member!");
-                    }
+                    return;
                 }
             }
+            
+            this._memberView.messageForError("No matching member!");
         }
         public void UpdateMemberOnList() {
-            string id = this._memberView.ReadMemberIDInput("6-character ID on the member to be updated: ");
+            string id = this._memberView.ReadMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
+
+            if (base.fileExists(base.filePath()) == true)
+            {
+                this._memberModelList = base.LoadMemberList();
+            }
 
             for (int i = 0; i < this._memberModelList.Count; i++)
             {
@@ -131,13 +181,11 @@ namespace Controller
                     File.WriteAllText(base.filePath(), json);
                     this.registerMemberOnList();
                     this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully updated!");
-                } else {
-                    if (i == this._memberModelList.Count && this._memberModelList.Count != 1) 
-                    {
-                        this._memberView.messageForError("Member not found!");
-                    }
+                    return;
                 }
             }
+
+            this._memberView.messageForError("Member not found!");
         }
     }
 }

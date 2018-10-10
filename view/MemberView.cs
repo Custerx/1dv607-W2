@@ -8,11 +8,14 @@ using Newtonsoft.Json;
 namespace View
 {
     
-    public class MemberView : Controller.FileController
+    public class MemberView
     {
-        public void compactList()
+        public void viewCompactList(List<Model.Member> memberList)
         {
-            List<Model.Member> memberList = base.LoadMemberList();
+            if (memberList.Count < 1)
+            {
+                return;
+            }
 
             for (int i = 0; i < memberList.Count; i++)
             {
@@ -23,9 +26,12 @@ namespace View
             }
         }
 
-        public void verboseList()
+        public void viewVerboseList(List<Model.Member> memberList)
         {
-            List<Model.Member> memberList = base.LoadMemberList();
+            if (memberList.Count < 1)
+            {
+                return;
+            }
 
             for (int i = 0; i < memberList.Count; i++)
             {
@@ -78,7 +84,35 @@ namespace View
             Console.WriteLine("\n " + message + " \n");
             Console.ResetColor();
         }
+        public string getSearchInput(string message)
+        {
+            string input;
 
+            while (true)
+            {
+                try
+                {
+                    Console.Write(message);
+                    input = Console.ReadLine();
+
+                    StripHTML(input);
+
+                    if (input.Length < 1)
+                    {
+                        throw new ApplicationException();
+                    }
+
+                    return input;
+                    }
+                    catch (Exception)
+                    {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("\nError! Username must contain atleast 1 characters.\n");
+                    Console.ResetColor();
+                }
+            }
+        }
         public string ReadUsernameInput(string message)
         {
             string input;
@@ -90,6 +124,7 @@ namespace View
                     Console.Write(message);
                     input = Console.ReadLine();
 
+                    StripHTML(input);
 
                     if (input.Length < 3)
                     {
@@ -119,6 +154,7 @@ namespace View
                     Console.Write(message);
                     input = Console.ReadLine();
 
+                    StripHTML(input);
 
                     if (input.Length != 10)
                     {
@@ -151,6 +187,8 @@ namespace View
                 {
                     Console.Write(message);
                     input = Console.ReadLine();
+
+                    StripHTML(input);
 
                     if (input.Length != 6)
                     {

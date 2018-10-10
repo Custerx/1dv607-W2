@@ -41,7 +41,8 @@ namespace Controller
 
             if (userPreviousChoice == 2) // Guest
             {
-                
+                userNavigationChoice = this._menuView.getGuestMenuInput();
+                this.guestNavigation(userNavigationChoice);
             }
 
             if (userPreviousChoice == 3)
@@ -64,17 +65,22 @@ namespace Controller
             int userNavigationChoice;
             if (userPreviousChoice == 0)
             {
-                userNavigationChoice = this._menuView.ReadMenuMemberInput();
+                userNavigationChoice = this._menuView.getMemberMenuInput();
                 this.memberNavigation(userNavigationChoice);
             }
 
             if (userPreviousChoice == 1)
             {
-                userNavigationChoice = this._menuView.ReadMenuBoatInput();
+                userNavigationChoice = this._menuView.getBoatMenuInput();
                 this.boatNavigation(userNavigationChoice);
             }
 
             if (userPreviousChoice == 2)
+            {
+                this._memberController.SearchAndDisplayMembersByName();
+            }
+
+            if (userPreviousChoice == 3)
             {
                 this._menuView.ExitMessage();
             }
@@ -84,24 +90,37 @@ namespace Controller
 
         private void boatNavigation(int userPreviousChoice)
         {
+            int userNavigationChoice;
+
             if (userPreviousChoice == 0)
             {
-                this._boatController.SaveBoatList();
+                this._boatController.registerBoatOnList();
             }
 
             if (userPreviousChoice == 1)
             {
-                this._boatController.deleteOrUpdateBoatFromList("Update");
+                this._boatController.delete_Update_View_BoatFromList("Update");
             }
 
             if (userPreviousChoice == 2)
             {
-                this._boatController.deleteOrUpdateBoatFromList("Delete");
+                this._boatController.delete_Update_View_BoatFromList("Delete");
             }
 
             if (userPreviousChoice == 3)
             {
-                this.Run(); // Display start menu.
+                this._boatController.delete_Update_View_BoatFromList("View");
+            }          
+
+            if (userPreviousChoice == 4)
+            {
+                this._boatController.listBoatClubBoats();
+            }
+
+            if (userPreviousChoice == 5)
+            {
+                userNavigationChoice = this._menuView.getNavigationMenuInput();
+                this.Navigation(userNavigationChoice);
             }
 
             this.Navigation(1); // Display boat-menu.
@@ -109,14 +128,16 @@ namespace Controller
 
         private void memberNavigation(int userPreviousChoice)
         {
+            int userNavigationChoice;
+
             if (userPreviousChoice == 0)
             {
-                this._memberView.compactList();
+                this._memberController.compactList();
             } 
             
             if (userPreviousChoice == 1)
             {
-                this._memberView.verboseList();
+                this._memberController.verboseList();
             }   
             
             if (userPreviousChoice == 2)
@@ -131,10 +152,41 @@ namespace Controller
             
             if (userPreviousChoice == 4)
             {
-                this.Run(); // Display start-menu.
+                userNavigationChoice = this._menuView.getNavigationMenuInput();
+                this.Navigation(userNavigationChoice);
             }
             
             this.Navigation(0); // Display member-menu.
+        }
+
+        private void guestNavigation(int userPreviousChoice)
+        {
+            if (userPreviousChoice == 0)
+            {
+                this._memberController.compactList();
+            } 
+            
+            if (userPreviousChoice == 1)
+            {
+                this._memberController.verboseList();
+            }
+
+            if (userPreviousChoice == 2)
+            {
+                this._boatController.listBoatClubBoats();
+            }
+            
+            if (userPreviousChoice == 3) // Search
+            {
+                this._memberController.SearchAndDisplayMembersByName();
+            }   
+            
+            if (userPreviousChoice == 4)
+            {
+                this._menuView.ExitMessage();
+            }
+            
+            this.AuthorizationNavigation(2); // Display guest-menu.
         }
     }
 }

@@ -14,17 +14,23 @@ namespace Controller
             this._boatView = boatView;
         }
 
-        public void deleteOrUpdateBoatFromList(string action) 
+        public void delete_Update_View_BoatFromList(string action) 
         {
-            List<Model.Member> viewMemberList = base.LoadMemberList();
+            List<Model.Member> memberList = base.LoadMemberList();
 
-            viewMemberList = editMemberDetails(viewMemberList, action);
+            memberList = editBoatDetails(memberList, action);
 
-            var json = JsonConvert.SerializeObject(viewMemberList, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(memberList, Formatting.Indented);
             File.WriteAllText(base.filePath(), json);
         }
-        private Model.Boat deleteBoat(Model.Member boatOwner)
+        public void listBoatClubBoats()
         {
+            List<Model.Member> memberList = base.LoadMemberList();
+            this._boatView.viewAllBoatClubBoats(memberList);
+        }
+        private void deleteBoat(Model.Member boatOwner)
+        {
+            this._boatView.viewAllBoats(boatOwner);
             string id = this._boatView.ReadIDInput("Type the ID of the boat you want to delete: ");
             
             for (int i = 0; i < boatOwner.Boats.Count; i++)
@@ -33,18 +39,17 @@ namespace Controller
                 {
                     this._boatView.messageForSuccess("Successfully deleted boat: " + boatOwner.Boats[i].BoatType + " length: " + boatOwner.Boats[i].Length + "m id: " + boatOwner.Boats[i].BoatID);
                     boatOwner.Boats.RemoveAt(i);
-                } else {
-                    if (i == boatOwner.Boats.Count) 
-                    {
-                        this._boatView.messageForError("No matching boat!");
-                    }
+                    return;
                 }
             }
-            return null;
+
+            this._boatView.messageForError("No matching boat!");
+            return;
         }
 
-        private Model.Boat updateBoat(Model.Member boatOwner)
+        private void updateBoatOnList(Model.Member boatOwner)
         {
+            this._boatView.viewAllBoats(boatOwner);
             string id = this._boatView.ReadIDInput("Type the ID of the boat you want to update: ");
             
             for (int i = 0; i < boatOwner.Boats.Count; i++)
@@ -52,27 +57,23 @@ namespace Controller
                 if (boatOwner.Boats[i].BoatID == id) 
                 {
                     boatOwner.Boats.RemoveAt(i);
-                    this.addUpdateBoat(boatOwner);
-                } else {
-                    if (i == boatOwner.Boats.Count) 
-                    {
-                        this._boatView.messageForError("No matching boat!");
-                    }
+                    this.updateBoat(boatOwner);
+                    return;
                 }
             }
-            return null;
+            this._boatView.messageForError("No matching boat!");
+            return;
         }
 
-        private Model.Member addUpdateBoat(Model.Member boatOwner)
+        private void updateBoat(Model.Member boatOwner)
         {
             int boatTypeAsNumber = this._boatView.ReadBoatTypeInput();
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
             int boatLength = this._boatView.ReadBoatLengthInput();
             boatOwner.Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
             this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully updated!");
-            return boatOwner;
         }
-        private List<Model.Member> editMemberDetails(List<Model.Member> viewMemberList, string action)
+        private List<Model.Member> editBoatDetails(List<Model.Member> viewMemberList, string action)
         {
             string id = this._boatView.ReadIDInput("The boat owner's 6-character ID: ");
 
@@ -88,45 +89,48 @@ namespace Controller
 
                     if (action == "Update")
                     {
-                        updateBoat(viewMemberList[i]);
+                        updateBoatOnList(viewMemberList[i]);
+                    }
+
+                    if (action == "View")
+                    {
+                        this._boatView.viewAllBoats(viewMemberList[i]);
                     }
 
                     return viewMemberList;
-                } else {
-                    if (i+1 == viewMemberList.Count && viewMemberList.Count != 1) {
-                        this._boatView.messageForError("No matching member!");
-                        return viewMemberList;
-                    }
                 }
             }
+
+            this._boatView.messageForError("No matching member!");
             return viewMemberList;
         }
 
-        public void SaveBoatList() 
+        public void registerBoatOnList() 
         {
-            string id = this._boatView.ReadIDInput("Your 6-character ID: ");
-            int boatTypeAsNumber = this._boatView.ReadBoatTypeInput();
-            Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
-            int boatLength = this._boatView.ReadBoatLengthInput();
+            string id = this._boatView.ReadIDInput("The boat owner's 6-character ID: ");
 
-            List<Model.Member> MemberList = base.fileExists(base.filePath()) == true ? base.LoadMemberList() : new List<Model.Member>();
+            List<Model.Member> MemberList = base.LoadMemberList();
 
             for (int i = 0; i < MemberList.Count; i++)
             {
                 if (MemberList[i].MemberID == id) 
                 {
+                    int boatTypeAsNumber = this._boatView.ReadBoatTypeInput();
+                    Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
+                    int boatLength = this._boatView.ReadBoatLengthInput();
+                    
                     MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
                     this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully added!");
-                } else {
-                    if (i+1 == MemberList.Count && MemberList.Count != 1) 
-                    {
-                        this._boatView.messageForError("No matching member!");
-                    }
+                    
+                    var json = JsonConvert.SerializeObject(MemberList, Formatting.Indented);
+                    File.WriteAllText(base.filePath(), json);
+
+                    return;
                 }
             }
-                
-            var json = JsonConvert.SerializeObject(MemberList, Formatting.Indented);
-            File.WriteAllText(base.filePath(), json);
+
+            this._boatView.messageForError("No matching member!");
+            return;
         }
     }
 }

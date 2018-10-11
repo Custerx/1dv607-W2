@@ -139,7 +139,44 @@ namespace View
                     Console.ResetColor();
                 }
             }
-        }   
+        }
+        public int getSearchMenuInput()
+        {
+            string input;
+
+            while (true)
+            {
+                try
+                {
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("Search-system for Jack Sparrow's Boatclub");
+                    Console.Write("\nSearch-menu: [0] = [Username], [1] = [Age], [2] = [Back]. Navigate with a number between 0 and 2.\n");
+                    Console.ResetColor();
+                    input = Console.ReadLine();
+
+
+                    if (input.Length != 1)
+                    {
+                        throw new ApplicationException();
+                    }
+
+                    if (!input.All(c => c >= '0' && c <= '2'))
+                    {
+                        throw new ApplicationException();
+                    }
+
+                    return int.Parse(input);
+                }
+                catch (Exception)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("\nError! Your choice must contain 1 number between 0 and 2.\n");
+                    Console.ResetColor();
+                }
+            }
+        } 
         public int getMemberMenuInput()
         {
             string input;

@@ -113,7 +113,7 @@ namespace View
                 }
             }
         }
-        public string ReadUsernameInput(string message)
+        public string getUsernameInput(string message)
         {
             string input;
 
@@ -143,7 +143,7 @@ namespace View
             }
         }
 
-        public long ReadPersonalnumberInput(string message)
+        public string getPersonalnumberInput(string message)
         {
             string input;
 
@@ -156,7 +156,7 @@ namespace View
 
                     StripHTML(input);
 
-                    if (input.Length != 10)
+                    if (input.Length != 12)
                     {
                         throw new ApplicationException();
                     }
@@ -166,18 +166,18 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    return long.Parse(input);
+                    return input;
                     }
                     catch (Exception)
                     {
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nError! Personal number must contain 10 numbers.\n");
+                    Console.WriteLine("\nError! Personal number must contain 12 numbers.\n");
                     Console.ResetColor();
                 }
             }
         }
-        public string ReadMemberIDInput(string message)
+        public string getMemberIDInput(string message)
         {
             string input;
 
@@ -207,7 +207,7 @@ namespace View
             }
         }
 
-        public string ReadMemberPasswordInput(string message)
+        public string getMemberPasswordInput(string message)
         {
             string input;
 
@@ -232,6 +232,40 @@ namespace View
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("\nPassword has too few characters, at least 6 characters.\n");
+                    Console.ResetColor();
+                }
+            }
+        }
+
+        public bool getBoolInput()
+        {
+            string input;
+
+            while (true)
+            {
+                try
+                {
+                    Console.Write("\nView members that are: [0] = [Older], [1] = [Younger].\n");
+                    input = Console.ReadLine();
+
+                    if (!input.All(c => c >= '0' && c <= '1'))
+                    {
+                        throw new ApplicationException();
+                    }
+
+                    if (int.Parse(input) == 1)
+                    {
+                        return true;
+                    } else
+                    {
+                        return false;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine("\nError! Your choice must contain 1 number between 0 and 1.\n");
                     Console.ResetColor();
                 }
             }

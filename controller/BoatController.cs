@@ -19,9 +19,7 @@ namespace Controller
             List<Model.Member> memberList = base.LoadMemberList();
 
             memberList = editBoatDetails(memberList, action);
-
-            var json = JsonConvert.SerializeObject(memberList, Formatting.Indented);
-            File.WriteAllText(base.filePath(), json);
+            base.saveToFile(memberList);
         }
         public void listBoatClubBoats()
         {
@@ -120,10 +118,9 @@ namespace Controller
                     int boatLength = this._boatView.ReadBoatLengthInput();
                     
                     MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
+                    base.saveToFile(MemberList);
+
                     this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully added!");
-                    
-                    var json = JsonConvert.SerializeObject(MemberList, Formatting.Indented);
-                    File.WriteAllText(base.filePath(), json);
 
                     return;
                 }

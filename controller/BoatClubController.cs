@@ -77,7 +77,8 @@ namespace Controller
 
             if (userPreviousChoice == 2)
             {
-                this._memberController.SearchAndDisplayMembersByName();
+                userNavigationChoice = this._menuView.getSearchMenuInput();
+                this.searchNavigation(userNavigationChoice, false);
             }
 
             if (userPreviousChoice == 3)
@@ -86,6 +87,36 @@ namespace Controller
             }
 
             this.Run(); // Display start menu.
+        }
+
+        private void searchNavigation(int userPreviousChoice, bool guest)
+        {
+            int userNavigationChoice;
+
+            if (userPreviousChoice == 0)
+            {
+                this._memberController.SearchAndViewMembersByName();
+            }
+
+            if (userPreviousChoice == 1)
+            {
+                this._memberController.SearchAndViewMembersByAge();
+            }
+
+            if (userPreviousChoice == 2)
+            {
+                if(guest)
+                {
+                    userNavigationChoice = this._menuView.getGuestMenuInput();
+                    this.guestNavigation(userNavigationChoice);
+                } else
+                {
+                    userNavigationChoice = this._menuView.getNavigationMenuInput();
+                    this.Navigation(userNavigationChoice);
+                }
+            }
+
+            this.Navigation(2); // Display search-menu.
         }
 
         private void boatNavigation(int userPreviousChoice)
@@ -161,6 +192,8 @@ namespace Controller
 
         private void guestNavigation(int userPreviousChoice)
         {
+            int userNavigationChoice;
+
             if (userPreviousChoice == 0)
             {
                 this._memberController.compactList();
@@ -178,7 +211,8 @@ namespace Controller
             
             if (userPreviousChoice == 3) // Search
             {
-                this._memberController.SearchAndDisplayMembersByName();
+                userNavigationChoice = this._menuView.getSearchMenuInput();
+                this.searchNavigation(userNavigationChoice, true);
             }   
             
             if (userPreviousChoice == 4)

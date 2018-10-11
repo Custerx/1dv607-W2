@@ -8,7 +8,8 @@ namespace Controller
 {
     public abstract class FileController : ISearchController
     {
-        private static Random random = new Random();    
+        private static Random random = new Random();
+        private int _thisYear = 2018;    
 
         public Model.Member getMemberByName(Model.SearchMember searchCriteria)
         {
@@ -22,25 +23,23 @@ namespace Controller
             return null;
         }
 
-        public Model.Member getMemberById(Model.SearchMember searchCriteria)
-        {
-            List<Model.Member> memberList = this.LoadMemberList();
-
-            foreach(var Member in memberList.Where(member => member.MemberID.Equals(searchCriteria.MemberID)))
-            {
-                return Member;
-            }
-
-            return null;
-        }
-        public List<Model.Member> getListMemberByAge(Model.SearchMember searchCriteria)
+        public List<Model.Member> getListMemberByAge(Model.SearchMember searchCriteria, bool younger)
         {
             List<Model.Member> memberList = this.LoadMemberList();
             List<Model.Member> memberListByAge = new List<Model.Member>();
 
-            foreach(var Member in memberList.Where(member => member.PersonalNumber.Equals(searchCriteria.PersonalNumber)))
+            if (younger)
             {
-                memberListByAge.Add(Member);
+                foreach(var Member in memberList.Where(member => (_thisYear - int.Parse(member.PersonalNumber.Substring(0, 4))) < (_thisYear - int.Parse(searchCriteria.PersonalNumber.Substring(0, 4)))))
+                {
+                    memberListByAge.Add(Member);
+                }
+            } else
+            {
+                foreach(var Member in memberList.Where(member => (_thisYear - int.Parse(member.PersonalNumber.Substring(0, 4))) > (_thisYear - int.Parse(searchCriteria.PersonalNumber.Substring(0, 4)))))
+                {
+                    memberListByAge.Add(Member);
+                }
             }
 
             return memberListByAge;
@@ -64,6 +63,12 @@ namespace Controller
             List<Model.Member> deserializedMemberlist = JsonConvert.DeserializeObject<List<Model.Member>>(File.ReadAllText(@filePath()));
 
             return deserializedMemberlist;
+        }
+
+        public void saveToFile(List<Model.Member> memberListToBeSaved)
+        {
+            var json = JsonConvert.SerializeObject(memberListToBeSaved, Formatting.Indented);
+            File.WriteAllText(this.filePath(), json);          
         }
 
         public bool fileExists(string FileName) 

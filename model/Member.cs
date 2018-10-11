@@ -7,7 +7,7 @@ namespace Model
     public class Member
     {
         private string _name;
-        private long _personalNumber;
+        private string _personalNumber;
         private string _memberID;
         private string _password;
 
@@ -24,12 +24,12 @@ namespace Model
             }            
         }
 
-        public long PersonalNumber 
+        public string PersonalNumber 
         { 
             get => _personalNumber; 
             set 
             {
-                if (value < 10)
+                if (value.Length < 12)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
@@ -54,7 +54,7 @@ namespace Model
             }            
         }
         
-        public Member(string Name, long PersonalNumber, string Id, string Password) {
+        public Member(string Name, string PersonalNumber, string Id, string Password) {
             this.Name = Name;
             this.PersonalNumber = PersonalNumber;
             this._memberID = Id;

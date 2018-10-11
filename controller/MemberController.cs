@@ -51,7 +51,7 @@ namespace Controller
         }
         public void registerMemberOnList() 
         {
-            string username = this._memberView.ReadUsernameInput("Chose username: ");
+            string username = this._memberView.getUsernameInput("Chose username: ");
             
             if (this.verifyUserName(username) == true)
             {
@@ -65,15 +65,13 @@ namespace Controller
                 this._memberModelList = base.LoadMemberList();
             }
 
-            long personalNumber = this._memberView.ReadPersonalnumberInput("Type the personal-number, example [8907076154]: ");
-            string password = this._memberView.ReadMemberPasswordInput("Chose password: ");
+            string personalNumber = this._memberView.getPersonalnumberInput("Type the personal-number, example [198907076154]: ");
+            string password = this._memberView.getMemberPasswordInput("Chose password: ");
 
             this._memberModelList.Add(new Model.Member(username, personalNumber, base.RandomID(), password));
+            base.saveToFile(this._memberModelList); 
             
-            this._memberView.messageForSuccess("Member successfully registered! Please login.");
-                
-            var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
-            File.WriteAllText(filePath(), json);
+            this._memberView.messageForSuccess("Member successfully registered! Please login.");              
         }
 
         private Model.Member SearchForMemberByName(string name)
@@ -82,13 +80,39 @@ namespace Controller
             return Member;
         }
 
-        private List<Model.Member> SearchForMembersByAge(int personalNumber)
+        public void SearchAndViewMembersByAge()
         {
-            List<Model.Member> memberList = base.getListMemberByAge(new Model.SearchMember{PersonalNumber = personalNumber});
-            return memberList;
+            string personalNumber = this._memberView.getPersonalnumberInput("Get members according to age. Type personal-number to be set as reference, example [198907076154]: ");
+            bool younger = this._memberView.getBoolInput();
+
+            List<Model.Member> memberList = base.getListMemberByAge(new Model.SearchMember{PersonalNumber = personalNumber}, younger);
+
+            if (memberList.Count < 1)
+            {
+                if (younger)
+                {
+                    this._memberView.messageForError("No members are younger than your personalnumber.");
+                } else
+                {
+                    this._memberView.messageForError("No members are older than your personalnumber.");
+                }
+
+                return;
+            } else
+            {
+                if (younger)
+                {
+                    this._memberView.messageForSuccess("Following members are younger than your personalnumber.");
+                } else
+                {
+                    this._memberView.messageForSuccess("Following members are older than your personalnumber.");
+                }
+            }
+
+            this._memberView.viewVerboseList(memberList);
         }
 
-        public void SearchAndDisplayMembersByName()
+        public void SearchAndViewMembersByName()
         {
             string searchString = this._memberView.getSearchInput("Get all username with character(s): ");
             List<Model.Member> memberList = base.getListMemberByName(new Model.SearchMember{SearchString = searchString});
@@ -98,8 +122,9 @@ namespace Controller
                 this._memberView.messageForError("No username matched with your character(s).");
                 return;
             }
+            this._memberView.messageForSuccess("Following username(s) matched with your character(s).");
 
-            this._memberView.viewCompactList(memberList);
+            this._memberView.viewVerboseList(memberList);
         }
 
         private bool verifyUserName(string username)
@@ -122,8 +147,8 @@ namespace Controller
 
         public int Authorization()
         {
-            string username = this._memberView.ReadUsernameInput("Username: ");
-            string password = this._memberView.ReadMemberPasswordInput("Password: ");
+            string username = this._memberView.getUsernameInput("Username: ");
+            string password = this._memberView.getMemberPasswordInput("Password: ");
 
             Model.Member member = this.SearchForMemberByName(username);
 
@@ -145,7 +170,7 @@ namespace Controller
 
         public void DeleteMemberFromList() 
         {
-            string id = this._memberView.ReadMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
+            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
 
             if (base.fileExists(base.filePath()) == true)
             {
@@ -157,8 +182,7 @@ namespace Controller
                 if (this._memberModelList[i].MemberID == id) {
                     this._memberModelList.RemoveAt(i);
                     this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully deleted!");
-                    var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
-                    File.WriteAllText(base.filePath(), json);
+                    base.saveToFile(this._memberModelList);
                     return;
                 }
             }
@@ -166,7 +190,7 @@ namespace Controller
             this._memberView.messageForError("No matching member!");
         }
         public void UpdateMemberOnList() {
-            string id = this._memberView.ReadMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
+            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
 
             if (base.fileExists(base.filePath()) == true)
             {
@@ -177,8 +201,7 @@ namespace Controller
             {
                 if (this._memberModelList[i].MemberID == id) {
                     this._memberModelList.RemoveAt(i);
-                    var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
-                    File.WriteAllText(base.filePath(), json);
+                    base.saveToFile(this._memberModelList);
                     this.registerMemberOnList();
                     this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully updated!");
                     return;

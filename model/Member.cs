@@ -54,7 +54,8 @@ namespace Model
             }            
         }
         
-        public Member(string Name, string PersonalNumber, string Id, string Password) {
+        public Member(string Name, string PersonalNumber, string Id, string Password) 
+        {
             this.Name = Name;
             this.PersonalNumber = PersonalNumber;
             this._memberID = Id;

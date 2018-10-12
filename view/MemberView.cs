@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace View
 {
     
-    public class MemberView
+    public class MemberView : GenericView
     {
         public void viewCompactList(List<Model.Member> memberList)
         {
@@ -42,22 +42,6 @@ namespace View
             }
         }
 
-        public void messageForError(string message)
-        {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\n " + message + " \n");
-            Console.ResetColor();
-        }
-
-        public void messageForSuccess(string message)
-        {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("\n " + message + " \n");
-            Console.ResetColor();
-        }
-
         public string getSearchInput(string message)
         {
             string input;
@@ -69,7 +53,7 @@ namespace View
                     Console.Write(message);
                     input = Console.ReadLine();
 
-                    StripHTML(input);
+                    base.StripHTML(input);
 
                     if (input.Length < 1)
                     {
@@ -82,7 +66,7 @@ namespace View
                     {
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nError! Username must contain atleast 1 characters.\n");
+                    Console.WriteLine("\nError! Search string must contain atleast 1 characters.\n");
                     Console.ResetColor();
                 }
             }
@@ -99,7 +83,7 @@ namespace View
                     Console.Write(message);
                     input = Console.ReadLine();
 
-                    StripHTML(input);
+                    base.StripHTML(input);
 
                     if (input.Length < 3)
                     {
@@ -129,7 +113,7 @@ namespace View
                     Console.Write(message);
                     input = Console.ReadLine();
 
-                    StripHTML(input);
+                    base.StripHTML(input);
 
                     if (input.Length != 12)
                     {
@@ -153,36 +137,6 @@ namespace View
             }
         }
 
-        public string getMemberIDInput(string message)
-        {
-            string input;
-
-            while (true)
-            {
-                try
-                {
-                    Console.Write(message);
-                    input = Console.ReadLine();
-
-                    StripHTML(input);
-
-                    if (input.Length != 6)
-                    {
-                        throw new ApplicationException();
-                    }
-
-                    return input;
-                    }
-                    catch (Exception)
-                    {
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nError! Member-id must contain 6 characters.\n");
-                    Console.ResetColor();
-                }
-            }
-        }
-
         public string getMemberPasswordInput(string message)
         {
             string input;
@@ -194,7 +148,7 @@ namespace View
                     Console.Write(message);
                     input = Console.ReadLine();
 
-                    StripHTML(input);
+                    base.StripHTML(input);
 
                     if (input.Length > 24 || input.Length < 6)
                     {
@@ -272,11 +226,6 @@ namespace View
                 displayBoats = "No boats registered.";
             }
             return displayBoats;
-        }
-
-        private static string StripHTML(string input)
-        {
-            return Regex.Replace(input, "<.*?>", String.Empty);
         }
     }
 }

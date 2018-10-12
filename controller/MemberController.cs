@@ -28,9 +28,7 @@ namespace Controller
             this._memberView = memberView;
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
-                this._memberModelList = new List<Model.Member>();
-                var json = JsonConvert.SerializeObject(this._memberModelList, Formatting.Indented);
-                File.WriteAllText(filePath(), json);
+                base.saveToFile(new List<Model.Member>());
 
                 this._memberView.messageForSuccess("New file created at: " + base.filePath());
                 
@@ -77,7 +75,7 @@ namespace Controller
 
         public void DeleteMemberFromList() 
         {
-            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
+            string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
 
             if (base.fileExists(base.filePath()) == true)
             {
@@ -97,7 +95,7 @@ namespace Controller
             this._memberView.messageForError("No matching member!");
         }
         public void UpdateMemberOnList() {
-            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
+            string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
 
             if (base.fileExists(base.filePath()) == true)
             {

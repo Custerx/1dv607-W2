@@ -30,7 +30,8 @@ namespace Model
 
         public string BoatID { get { return this._boatID;} set { this._boatID = value; } }
 
-        public Boat(Enums.BoatTypes.Boats boatType, int length, string id) {
+        public Boat(Enums.BoatTypes.Boats boatType, int length, string id) 
+        {
             this.BoatType = boatType;
             this.Length = length;
             this._boatID = id;

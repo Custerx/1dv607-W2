@@ -9,7 +9,7 @@ namespace View
 {
     public class BoatView
     {
-        public void viewAllBoats(Model.Member boatOwner)
+        public void viewMemberBoats(Model.Member boatOwner)
         {
             for (int i = 0; i < boatOwner.Boats.Count; i++)
             {
@@ -19,17 +19,12 @@ namespace View
                 Console.ResetColor();
             }
         }
-        
-        private string ToString(Model.Boat boat) 
-        {   
-            return string.Join(" ", boat.BoatType + " on " + boat.Length + "m ID: " + boat.BoatID);
-        }
 
         public void viewAllBoatClubBoats(List<Model.Member> memberList)
         {      
             for (int i = 0; i < memberList.Count; i++)
             {
-                this.viewAllBoats(memberList[i]);
+                this.viewMemberBoats(memberList[i]);
             }
         }
         public void messageForError(string message)
@@ -48,7 +43,7 @@ namespace View
             Console.ResetColor();
         }
 
-        public string ReadIDInput(string message)
+        public string getIDInput(string message)
         {
             string input;
 
@@ -78,7 +73,7 @@ namespace View
             }
         }
         
-        public int ReadBoatLengthInput()
+        public int getBoatLengthInput()
         {
             string input;
 
@@ -111,7 +106,7 @@ namespace View
             }
         }
 
-        public int ReadBoatTypeInput()
+        public int getBoatTypeInput()
         {
             string input;
 
@@ -143,6 +138,12 @@ namespace View
                 }
             }
         }
+        
+        private string ToString(Model.Boat boat) 
+        {   
+            return string.Join(" ", boat.BoatType + " on " + boat.Length + "m ID: " + boat.BoatID);
+        }
+
         private static string StripHTML(string input)
         {
             return Regex.Replace(input, "<.*?>", String.Empty);

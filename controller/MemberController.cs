@@ -49,6 +49,7 @@ namespace Controller
             List<Model.Member> memberList = base.LoadMemberList();
             this._memberView.viewCompactList(memberList);
         }
+
         public void registerMemberOnList() 
         {
             string username = this._memberView.getUsernameInput("Chose username: ");
@@ -74,10 +75,70 @@ namespace Controller
             this._memberView.messageForSuccess("Member successfully registered! Please login.");              
         }
 
-        private Model.Member SearchForMemberByName(string name)
+        public void DeleteMemberFromList() 
         {
-            Model.Member Member = base.getMemberByName(new Model.SearchMember{Name = name});
-            return Member;
+            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
+
+            if (base.fileExists(base.filePath()) == true)
+            {
+                this._memberModelList = base.LoadMemberList();
+            }
+
+            for (int i = 0; i < this._memberModelList.Count; i++)
+            {
+                if (this._memberModelList[i].MemberID == id) {
+                    this._memberModelList.RemoveAt(i);
+                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully deleted!");
+                    base.saveToFile(this._memberModelList);
+                    return;
+                }
+            }
+            
+            this._memberView.messageForError("No matching member!");
+        }
+        public void UpdateMemberOnList() {
+            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
+
+            if (base.fileExists(base.filePath()) == true)
+            {
+                this._memberModelList = base.LoadMemberList();
+            }
+
+            for (int i = 0; i < this._memberModelList.Count; i++)
+            {
+                if (this._memberModelList[i].MemberID == id) {
+                    this._memberModelList.RemoveAt(i);
+                    base.saveToFile(this._memberModelList);
+                    this.registerMemberOnList();
+                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully updated!");
+                    return;
+                }
+            }
+
+            this._memberView.messageForError("Member not found!");
+        }
+
+        public int Authorization()
+        {
+            string username = this._memberView.getUsernameInput("Username: ");
+            string password = this._memberView.getMemberPasswordInput("Password: ");
+
+            Model.Member member = this.SearchForMemberByName(username);
+
+            if (member == null)
+            {
+                this._memberView.messageForError("Wrong username or password.");
+                return 0;
+            } else if (member.Password.Equals(password))
+            {
+                this._memberView.messageForSuccess("Welcome " + username + "!");
+                this.MemberID = member.MemberID;
+                return 1;
+            } else
+            {
+                this._memberView.messageForError("Wrong username or password.");
+                return 0;
+            }
         }
 
         public void SearchAndViewMembersByAge()
@@ -145,70 +206,10 @@ namespace Controller
             }
         }
 
-        public int Authorization()
+        private Model.Member SearchForMemberByName(string name)
         {
-            string username = this._memberView.getUsernameInput("Username: ");
-            string password = this._memberView.getMemberPasswordInput("Password: ");
-
-            Model.Member member = this.SearchForMemberByName(username);
-
-            if (member == null)
-            {
-                this._memberView.messageForError("Wrong username or password.");
-                return 0;
-            } else if (member.Password.Equals(password))
-            {
-                this._memberView.messageForSuccess("Welcome " + username + "!");
-                this.MemberID = member.MemberID;
-                return 1;
-            } else
-            {
-                this._memberView.messageForError("Wrong username or password.");
-                return 0;
-            }
-        }
-
-        public void DeleteMemberFromList() 
-        {
-            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
-
-            if (base.fileExists(base.filePath()) == true)
-            {
-                this._memberModelList = base.LoadMemberList();
-            }
-
-            for (int i = 0; i < this._memberModelList.Count; i++)
-            {
-                if (this._memberModelList[i].MemberID == id) {
-                    this._memberModelList.RemoveAt(i);
-                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully deleted!");
-                    base.saveToFile(this._memberModelList);
-                    return;
-                }
-            }
-            
-            this._memberView.messageForError("No matching member!");
-        }
-        public void UpdateMemberOnList() {
-            string id = this._memberView.getMemberIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
-
-            if (base.fileExists(base.filePath()) == true)
-            {
-                this._memberModelList = base.LoadMemberList();
-            }
-
-            for (int i = 0; i < this._memberModelList.Count; i++)
-            {
-                if (this._memberModelList[i].MemberID == id) {
-                    this._memberModelList.RemoveAt(i);
-                    base.saveToFile(this._memberModelList);
-                    this.registerMemberOnList();
-                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully updated!");
-                    return;
-                }
-            }
-
-            this._memberView.messageForError("Member not found!");
+            Model.Member Member = base.getMemberByName(new Model.SearchMember{Name = name});
+            return Member;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Controller
     public abstract class FileController : ISearchController
     {
         private static Random random = new Random();
-        private int _thisYear = 2018;    
+        private int _thisYear = 2018; // Used to calculate age from personalnumber.
 
         public Model.Member getMemberByName(Model.SearchMember searchCriteria)
         {
@@ -94,6 +94,7 @@ namespace Controller
             var path = Path.Combine(systemPath , "JackSparrowBoatClub");
             return path;
         }
+
         public string RandomID(int length = 6)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

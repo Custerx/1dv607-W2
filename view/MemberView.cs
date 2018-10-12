@@ -42,33 +42,6 @@ namespace View
             }
         }
 
-        private string ToString(string format, Model.Member member) 
-        {
-            if (format == "Verbose" || format.Length == 0 || format == null) 
-            {     
-                return string.Join(" ", "Name: " + member.Name, "Personal-number: " + member.PersonalNumber, "Member-id: " + member.MemberID, "Boats: " + this.displayBoat(member.Boats));
-            }
-            if (format == "Compact") {
-                return string.Join(" ", "Name: " + member.Name, "Member-id: " + member.MemberID, "Boats: " + member.Boats.Count + ".");
-            }
-            throw new FormatException(nameof(format));
-        }
-
-        private string displayBoat(List<Model.Boat> boats)
-        {
-            string displayBoats = "";
-            if (boats.Count > 0)
-            {
-                 foreach (Model.Boat boat in boats)
-                {
-                    displayBoats += boat.BoatType + " on " + boat.Length + "m with Boat-id: " + boat.BoatID + ". " ;
-                }               
-            } else {
-                displayBoats = "No boats registered.";
-            }
-            return displayBoats;
-        }
-
         public void messageForError(string message)
         {
             Console.BackgroundColor = ConsoleColor.Red;
@@ -84,6 +57,7 @@ namespace View
             Console.WriteLine("\n " + message + " \n");
             Console.ResetColor();
         }
+
         public string getSearchInput(string message)
         {
             string input;
@@ -113,6 +87,7 @@ namespace View
                 }
             }
         }
+
         public string getUsernameInput(string message)
         {
             string input;
@@ -177,6 +152,7 @@ namespace View
                 }
             }
         }
+
         public string getMemberIDInput(string message)
         {
             string input;
@@ -269,6 +245,33 @@ namespace View
                     Console.ResetColor();
                 }
             }
+        }
+
+        private string ToString(string format, Model.Member member) 
+        {
+            if (format == "Verbose" || format.Length == 0 || format == null) 
+            {     
+                return string.Join(" ", "Name: " + member.Name, "Personal-number: " + member.PersonalNumber, "Member-id: " + member.MemberID, "Boats: " + this.displayBoat(member.Boats));
+            }
+            if (format == "Compact") {
+                return string.Join(" ", "Name: " + member.Name, "Member-id: " + member.MemberID, "Boats: " + member.Boats.Count + ".");
+            }
+            throw new FormatException(nameof(format));
+        }
+
+        private string displayBoat(List<Model.Boat> boats)
+        {
+            string displayBoats = "";
+            if (boats.Count > 0)
+            {
+                 foreach (Model.Boat boat in boats)
+                {
+                    displayBoats += boat.BoatType + " on " + boat.Length + "m with Boat-id: " + boat.BoatID + ". " ;
+                }               
+            } else {
+                displayBoats = "No boats registered.";
+            }
+            return displayBoats;
         }
 
         private static string StripHTML(string input)

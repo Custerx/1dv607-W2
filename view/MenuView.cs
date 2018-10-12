@@ -38,6 +38,7 @@ namespace View
                 }
             }
         }
+
         public int getGuestMenuInput()
         {
             string input;
@@ -70,6 +71,7 @@ namespace View
                 }
             }
         }
+
         public int getNavigationMenuInput()
         {
             string input;
@@ -140,6 +142,7 @@ namespace View
                 }
             }
         }
+
         public int getSearchMenuInput()
         {
             string input;
@@ -176,7 +179,8 @@ namespace View
                     Console.ResetColor();
                 }
             }
-        } 
+        }
+        
         public int getMemberMenuInput()
         {
             string input;

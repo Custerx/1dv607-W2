@@ -95,7 +95,7 @@ namespace Controller
 
             if (userPreviousChoice == 0)
             {
-                this._memberController.SearchAndViewMembersByName();
+                this._memberController.SearchAndViewMembersByName(false);
             }
 
             if (userPreviousChoice == 1)
@@ -104,6 +104,11 @@ namespace Controller
             }
 
             if (userPreviousChoice == 2)
+            {
+                this._memberController.SearchAndViewMembersByNameBoatType();
+            }
+
+            if (userPreviousChoice == 3)
             {
                 if(guest)
                 {

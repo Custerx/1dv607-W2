@@ -28,9 +28,12 @@ namespace Controller
             this._memberView = memberView;
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
-                base.saveToFile(new List<Model.Member>());
+                var memberList = new Test.MemberList();
+                List<Model.Member> memberListForTesting = memberList.create50membersAnd200BoatsThenSaveTofile();
 
-                this._memberView.messageForSuccess("New file created at: " + base.filePath());
+                base.saveToFile(memberListForTesting);
+                
+                this._memberView.messageForSuccess("New file created at: " + base.filePath() + " with 50 members and 4 boats each.");
                 
                 this.registerMemberOnList();
             }
@@ -59,10 +62,7 @@ namespace Controller
                 return;
             }
 
-            if (base.fileExists(base.filePath()) == true)
-            {
-                this._memberModelList = base.LoadMemberList();
-            }
+            this.loadMemberListFromFile();
 
             string personalNumber = this._memberView.getPersonalnumberInput("Type the personal-number, example [198907076154]: ");
             string password = this._memberView.getMemberPasswordInput("Chose password: ");
@@ -77,10 +77,7 @@ namespace Controller
         {
             string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
 
-            if (base.fileExists(base.filePath()) == true)
-            {
-                this._memberModelList = base.LoadMemberList();
-            }
+            this.loadMemberListFromFile();
 
             for (int i = 0; i < this._memberModelList.Count; i++)
             {
@@ -97,10 +94,7 @@ namespace Controller
         public void UpdateMemberOnList() {
             string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
 
-            if (base.fileExists(base.filePath()) == true)
-            {
-                this._memberModelList = base.LoadMemberList();
-            }
+            this.loadMemberListFromFile();
 
             for (int i = 0; i < this._memberModelList.Count; i++)
             {
@@ -139,12 +133,37 @@ namespace Controller
             }
         }
 
+        public void SearchAndViewMembersByNameBoatType()
+        {
+            List<Model.Member> memberList_ByName = this.SearchAndViewMembersByName(true);
+            
+            if (memberList_ByName == null)
+            {
+                return;
+            }
+
+            int boatTypeAsNumber = this._memberView.getBoatTypeInput();
+            Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
+
+            List<Model.Member> memberList_ByNameAndBoatType = base.getList_Member_NameAndBoatType(new Model.SearchMember{BoatType = boatType}, memberList_ByName);
+
+            if (memberList_ByNameAndBoatType.Count < 1)
+            {
+                this._memberView.messageForError("No member matched with your boat type.");
+                return;
+            } else
+            {
+                this._memberView.messageForSuccess("Following member(s) matched with your search criteria(s).");
+                this._memberView.viewVerboseList(memberList_ByNameAndBoatType);
+            }
+        }
+
         public void SearchAndViewMembersByAge()
         {
             string personalNumber = this._memberView.getPersonalnumberInput("Get members according to age. Type personal-number to be set as reference, example [198907076154]: ");
             bool younger = this._memberView.getBoolInput();
 
-            List<Model.Member> memberList = base.getListMemberByAge(new Model.SearchMember{PersonalNumber = personalNumber}, younger);
+            List<Model.Member> memberList = base.getList_Member_Age(new Model.SearchMember{PersonalNumber = personalNumber}, younger);
 
             if (memberList.Count < 1)
             {
@@ -171,19 +190,35 @@ namespace Controller
             this._memberView.viewVerboseList(memberList);
         }
 
-        public void SearchAndViewMembersByName()
+        public List<Model.Member> SearchAndViewMembersByName(bool extendedSearch)
         {
-            string searchString = this._memberView.getSearchInput("Get all username with character(s): ");
-            List<Model.Member> memberList = base.getListMemberByName(new Model.SearchMember{SearchString = searchString});
+            string searchString = this._memberView.getSearchInput("Get all username(s) with character(s): ");
+            List<Model.Member> memberList = base.getList_Member_Name(new Model.SearchMember{SearchString = searchString});
 
             if (memberList.Count < 1)
             {
                 this._memberView.messageForError("No username matched with your character(s).");
-                return;
+                return null;
             }
-            this._memberView.messageForSuccess("Following username(s) matched with your character(s).");
 
-            this._memberView.viewVerboseList(memberList);
+            if (extendedSearch)
+            {
+                return memberList;
+            } else
+            {
+                this._memberView.messageForSuccess("Following username(s) matched with your character(s).");
+                this._memberView.viewVerboseList(memberList);
+
+                return null;
+            }
+        }
+
+        private void loadMemberListFromFile()
+        {
+            if (base.fileExists(base.filePath()) == true)
+            {
+                this._memberModelList = base.LoadMemberList();
+            }
         }
 
         private bool verifyUserName(string username)

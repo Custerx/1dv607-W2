@@ -44,7 +44,6 @@ namespace Controller
             }
 
             this._boatView.messageForError("No matching member!");
-            return;
         }
 
         public void delete_Update_View_BoatFromList(string action) 
@@ -84,6 +83,7 @@ namespace Controller
             }
 
             this._boatView.messageForError("No matching member!");
+
             return viewMemberList;
         }
 
@@ -103,7 +103,6 @@ namespace Controller
             }
 
             this._boatView.messageForError("No matching boat!");
-            return;
         }
 
         private void updateBoatOnList(Model.Member boatOwner)
@@ -120,8 +119,8 @@ namespace Controller
                     return;
                 }
             }
+
             this._boatView.messageForError("No matching boat!");
-            return;
         }
 
         private void updateBoat(Model.Member boatOwner)
@@ -129,7 +128,9 @@ namespace Controller
             int boatTypeAsNumber = this._boatView.getBoatTypeInput();
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
             int boatLength = this._boatView.getBoatLengthInput();
+            
             boatOwner.Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
+
             this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully updated!");
         }
     }

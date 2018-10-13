@@ -8,7 +8,7 @@ namespace Controller
 {
     public abstract class FileController : ISearchController
     {
-        private static Random random = new Random();
+        private static Random _random = new Random();
         private int _thisYear = 2018; // Used to calculate age from personalnumber.
 
         public Model.Member getMemberByName(Model.SearchMember searchCriteria)
@@ -23,41 +23,63 @@ namespace Controller
             return null;
         }
 
-        public List<Model.Member> getListMemberByAge(Model.SearchMember searchCriteria, bool younger)
+        public List<Model.Member> getList_Member_Age(Model.SearchMember searchCriteria, bool younger)
         {
             List<Model.Member> memberList = this.LoadMemberList();
-            List<Model.Member> memberListByAge = new List<Model.Member>();
+            List<Model.Member> memberList_ByAge = new List<Model.Member>();
 
             if (younger)
             {
-                foreach(var Member in memberList.Where(member => (_thisYear - int.Parse(member.PersonalNumber.Substring(0, 4))) < (_thisYear - int.Parse(searchCriteria.PersonalNumber.Substring(0, 4)))))
+                foreach(var Member in memberList.Where(member => (_thisYear - int.Parse(member.PersonalNumber.Substring(0, 4))) < 
+                    (_thisYear - int.Parse(searchCriteria.PersonalNumber.Substring(0, 4)))))
                 {
-                    memberListByAge.Add(Member);
+                    memberList_ByAge.Add(Member);
                 }
             } else
             {
-                foreach(var Member in memberList.Where(member => (_thisYear - int.Parse(member.PersonalNumber.Substring(0, 4))) > (_thisYear - int.Parse(searchCriteria.PersonalNumber.Substring(0, 4)))))
+                foreach(var Member in memberList.Where(member => (_thisYear - int.Parse(member.PersonalNumber.Substring(0, 4))) > 
+                    (_thisYear - int.Parse(searchCriteria.PersonalNumber.Substring(0, 4)))))
                 {
-                    memberListByAge.Add(Member);
+                    memberList_ByAge.Add(Member);
                 }
             }
 
-            return memberListByAge;
+            return memberList_ByAge;
         }
 
-        public List<Model.Member> getListMemberByName(Model.SearchMember searchCriteria)
+        public List<Model.Member> getList_Member_Name(Model.SearchMember searchCriteria)
         {
             List<Model.Member> memberList = this.LoadMemberList();
-            List<Model.Member> memberListByName = new List<Model.Member>();
+            List<Model.Member> memberList_ByName = new List<Model.Member>();
 
             foreach(var Member in memberList.Where(member => member.Name.ToLower().Contains(searchCriteria.SearchString.ToLower())))
             {
-                memberListByName.Add(Member);
+                memberList_ByName.Add(Member);
             }
 
-            return memberListByName;
+            return memberList_ByName;
         }
-        
+
+        public List<Model.Member> getList_Member_NameAndBoatType(Model.SearchMember searchCriteria, List<Model.Member> memberList_ByName)
+        {
+            List<Model.Member> memberList_ByBoat = new List<Model.Member>();
+
+            foreach(var Member in memberList_ByName)
+            {
+                bool memberGotMatchingBoat = this.isBoatOnList(searchCriteria, Member.Boats);
+
+                List<Model.Boat> listWithMatchingBoat = this.getBoatList(searchCriteria, Member.Boats);
+
+                if (memberGotMatchingBoat)
+                {
+                    Member.Boats = listWithMatchingBoat;
+                    memberList_ByBoat.Add(Member);
+                }
+            }
+
+            return memberList_ByBoat;
+        }
+
         public List<Model.Member> LoadMemberList() 
         {
             List<Model.Member> deserializedMemberlist = JsonConvert.DeserializeObject<List<Model.Member>>(File.ReadAllText(@filePath()));
@@ -98,7 +120,38 @@ namespace Controller
         public string RandomID(int length = 6)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
+        }
+
+        private bool isBoatOnList(Model.SearchMember searchCriteria, List<Model.Boat> boatList)
+        {
+            if (boatList.Count > 0)
+            {
+                foreach (Model.Boat Boat in boatList.Where(boat => boat.BoatType.Equals(searchCriteria.BoatType)))
+                {
+                    return true;
+                }               
+            } else {
+                return false;
+            }
+            
+            return false;
+        }
+
+        private List<Model.Boat> getBoatList(Model.SearchMember searchCriteria, List<Model.Boat> boatList)
+        {
+            List<Model.Boat> listOfMatchingBoatType = new List<Model.Boat>();
+            if (boatList.Count > 0)
+            {
+                foreach (Model.Boat Boat in boatList.Where(boat => boat.BoatType.Equals(searchCriteria.BoatType)))
+                {
+                    listOfMatchingBoatType.Add(Boat);
+                }               
+            } else {
+                return null;
+            }
+            
+            return listOfMatchingBoatType;
         }
     }
 }

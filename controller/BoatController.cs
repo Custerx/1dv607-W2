@@ -34,7 +34,7 @@ namespace Controller
                     Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
                     int boatLength = this._boatView.getBoatLengthInput();
                     
-                    MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
+                    MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, base.randomID()));
                     base.saveToFile(MemberList);
 
                     this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully added!");
@@ -129,7 +129,7 @@ namespace Controller
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
             int boatLength = this._boatView.getBoatLengthInput();
             
-            boatOwner.Boats.Add(new Model.Boat(boatType, boatLength, base.RandomID()));
+            boatOwner.Boats.Add(new Model.Boat(boatType, boatLength, base.randomID()));
 
             this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully updated!");
         }

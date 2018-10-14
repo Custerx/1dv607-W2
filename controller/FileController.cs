@@ -23,6 +23,18 @@ namespace Controller
             return null;
         }
 
+        public Model.Member getMemberByPersonalNumber(Model.SearchMember searchCriteria)
+        {
+            List<Model.Member> memberList = this.LoadMemberList();
+
+            foreach(var Member in memberList.Where(member => member.PersonalNumber.Equals(searchCriteria.PersonalNumber)))
+            {
+                return Member;
+            }
+
+            return null;
+        }
+
         public List<Model.Member> getList_Member_Age(Model.SearchMember searchCriteria, bool younger)
         {
             List<Model.Member> memberList = this.LoadMemberList();
@@ -117,9 +129,9 @@ namespace Controller
             return path;
         }
 
-        public string RandomID(int length = 6)
+        public string randomID(int length = 6)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
         }
 

@@ -11,6 +11,7 @@ namespace Controller
         private string _memberID;
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
+
         public string MemberID
         { 
             get => _memberID; 
@@ -23,13 +24,14 @@ namespace Controller
                 _memberID = value;
             }            
         }
+
         public MemberController(View.MemberView memberView)
         {
             this._memberView = memberView;
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
                 var memberList = new Test.MemberList();
-                List<Model.Member> memberListForTesting = memberList.create50membersAnd200BoatsThenSaveTofile();
+                List<Model.Member> memberListForTesting = memberList.create50membersAnd200Boats();
 
                 base.saveToFile(memberListForTesting);
                 
@@ -53,8 +55,7 @@ namespace Controller
 
         public void registerMemberOnList() 
         {
-            string username = this._memberView.getUsernameInput("Chose username: ");
-            
+            string username = this._memberView.getUsernameInput("Chose username: ");          
             if (this.verifyUserName(username) == true)
             {
                 this._memberView.messageForError("Username already taken.");
@@ -62,18 +63,25 @@ namespace Controller
                 return;
             }
 
+            string personalNumber = this._memberView.getPersonalnumberInput("Type the personal-number, example [198907076154]: ");
+            if (this.verifyPersonalNumber(personalNumber) == true)
+            {
+                this._memberView.messageForError("Personal-number already taken.");
+                this.registerMemberOnList();
+                return;
+            }          
+
             this.loadMemberListFromFile();
 
-            string personalNumber = this._memberView.getPersonalnumberInput("Type the personal-number, example [198907076154]: ");
             string password = this._memberView.getMemberPasswordInput("Chose password: ");
 
-            this._memberModelList.Add(new Model.Member(username, personalNumber, base.RandomID(), password));
+            this._memberModelList.Add(new Model.Member(username, personalNumber, base.randomID(), password));
             base.saveToFile(this._memberModelList); 
             
             this._memberView.messageForSuccess("Member successfully registered! Please login.");              
         }
 
-        public void DeleteMemberFromList() 
+        public void deleteMemberFromList() 
         {
             string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
 
@@ -91,7 +99,8 @@ namespace Controller
             
             this._memberView.messageForError("No matching member!");
         }
-        public void UpdateMemberOnList() {
+
+        public void updateMemberOnList() {
             string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
 
             this.loadMemberListFromFile();
@@ -110,12 +119,12 @@ namespace Controller
             this._memberView.messageForError("Member not found!");
         }
 
-        public int Authorization()
+        public int authorization()
         {
             string username = this._memberView.getUsernameInput("Username: ");
             string password = this._memberView.getMemberPasswordInput("Password: ");
 
-            Model.Member member = this.SearchForMemberByName(username);
+            Model.Member member = this.searchForMemberByName(username);
 
             if (member == null)
             {
@@ -133,9 +142,9 @@ namespace Controller
             }
         }
 
-        public void SearchAndViewMembersByNameBoatType()
+        public void searchAndViewMembersByNameBoatType()
         {
-            List<Model.Member> memberList_ByName = this.SearchAndViewMembersByName(true);
+            List<Model.Member> memberList_ByName = this.searchAndViewMembersByName(true);
             
             if (memberList_ByName == null)
             {
@@ -158,7 +167,7 @@ namespace Controller
             }
         }
 
-        public void SearchAndViewMembersByAge()
+        public void searchAndViewMembersByAge()
         {
             string personalNumber = this._memberView.getPersonalnumberInput("Get members according to age. Type personal-number to be set as reference, example [198907076154]: ");
             bool younger = this._memberView.getBoolInput();
@@ -190,7 +199,7 @@ namespace Controller
             this._memberView.viewVerboseList(memberList);
         }
 
-        public List<Model.Member> SearchAndViewMembersByName(bool extendedSearch)
+        public List<Model.Member> searchAndViewMembersByName(bool extendedSearch)
         {
             string searchString = this._memberView.getSearchInput("Get all username(s) with character(s): ");
             List<Model.Member> memberList = base.getList_Member_Name(new Model.SearchMember{SearchString = searchString});
@@ -223,7 +232,7 @@ namespace Controller
 
         private bool verifyUserName(string username)
         {
-            Model.Member member = this.SearchForMemberByName(username);
+            Model.Member member = this.searchForMemberByName(username);
             
             if (member == null)
             {
@@ -239,9 +248,33 @@ namespace Controller
             }
         }
 
-        private Model.Member SearchForMemberByName(string name)
+        private Model.Member searchForMemberByName(string name)
         {
             Model.Member Member = base.getMemberByName(new Model.SearchMember{Name = name});
+            return Member;
+        }
+
+        private bool verifyPersonalNumber(string personalNumber)
+        {
+            Model.Member member = this.searchForMemberByPersonalNumber(personalNumber);
+            
+            if (member == null)
+            {
+                return false;
+            } 
+            
+            if (member.PersonalNumber.Equals(personalNumber))
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        private Model.Member searchForMemberByPersonalNumber(string personalNumber)
+        {
+            Model.Member Member = base.getMemberByPersonalNumber(new Model.SearchMember{PersonalNumber = personalNumber});
             return Member;
         }
     }

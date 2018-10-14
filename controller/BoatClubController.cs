@@ -19,19 +19,19 @@ namespace Controller
             this._boatController = new Controller.BoatController(this._boatView);
         }
 
-        public void Run()
+        public void run()
         {          
             int userNavigationChoice = this._menuView.getAuthorizationMenuInput();
-            this.AuthorizationNavigation(userNavigationChoice);
+            this.authorizationNavigation(userNavigationChoice);
         }
 
-        private void AuthorizationNavigation(int userPreviousChoice)
+        private void authorizationNavigation(int userPreviousChoice)
         {
             int userNavigationChoice = 0;
             
             if (userPreviousChoice == 0)
             {
-                userNavigationChoice = this._memberController.Authorization();
+                userNavigationChoice = this._memberController.authorization();
             }
 
             if (userPreviousChoice == 1)
@@ -53,14 +53,14 @@ namespace Controller
             if (userNavigationChoice == 1) // Authorized user.
             {
                 userNavigationChoice = this._menuView.getNavigationMenuInput();
-                this.Navigation(userNavigationChoice);
+                this.navigation(userNavigationChoice);
             } else
             {
-                this.Run();
+                this.run();
             }
         }
 
-        private void Navigation(int userPreviousChoice)
+        private void navigation(int userPreviousChoice)
         {
             int userNavigationChoice;
             if (userPreviousChoice == 0)
@@ -86,7 +86,7 @@ namespace Controller
                 this._menuView.ExitMessage();
             }
 
-            this.Run(); // Display start menu.
+            this.run(); // Display start menu.
         }
 
         private void searchNavigation(int userPreviousChoice, bool guest)
@@ -95,17 +95,17 @@ namespace Controller
 
             if (userPreviousChoice == 0)
             {
-                this._memberController.SearchAndViewMembersByName(false);
+                this._memberController.searchAndViewMembersByName(false);
             }
 
             if (userPreviousChoice == 1)
             {
-                this._memberController.SearchAndViewMembersByAge();
+                this._memberController.searchAndViewMembersByAge();
             }
 
             if (userPreviousChoice == 2)
             {
-                this._memberController.SearchAndViewMembersByNameBoatType();
+                this._memberController.searchAndViewMembersByNameBoatType();
             }
 
             if (userPreviousChoice == 3)
@@ -117,11 +117,11 @@ namespace Controller
                 } else
                 {
                     userNavigationChoice = this._menuView.getNavigationMenuInput();
-                    this.Navigation(userNavigationChoice);
+                    this.navigation(userNavigationChoice);
                 }
             }
 
-            this.Navigation(2); // Display search-menu.
+            this.navigation(2); // Display search-menu.
         }
 
         private void boatNavigation(int userPreviousChoice)
@@ -156,10 +156,10 @@ namespace Controller
             if (userPreviousChoice == 5)
             {
                 userNavigationChoice = this._menuView.getNavigationMenuInput();
-                this.Navigation(userNavigationChoice);
+                this.navigation(userNavigationChoice);
             }
 
-            this.Navigation(1); // Display boat-menu.
+            this.navigation(1); // Display boat-menu.
         }
 
         private void memberNavigation(int userPreviousChoice)
@@ -178,21 +178,21 @@ namespace Controller
             
             if (userPreviousChoice == 2)
             {
-                this._memberController.UpdateMemberOnList();
+                this._memberController.updateMemberOnList();
             }   
             
             if (userPreviousChoice == 3)
             {
-                this._memberController.DeleteMemberFromList();
+                this._memberController.deleteMemberFromList();
             }  
             
             if (userPreviousChoice == 4)
             {
                 userNavigationChoice = this._menuView.getNavigationMenuInput();
-                this.Navigation(userNavigationChoice);
+                this.navigation(userNavigationChoice);
             }
             
-            this.Navigation(0); // Display member-menu.
+            this.navigation(0); // Display member-menu.
         }
 
         private void guestNavigation(int userPreviousChoice)
@@ -225,7 +225,7 @@ namespace Controller
                 this._menuView.ExitMessage();
             }
             
-            this.AuthorizationNavigation(2); // Display guest-menu.
+            this.authorizationNavigation(2); // Display guest-menu.
         }
     }
 }

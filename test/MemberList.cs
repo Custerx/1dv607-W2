@@ -11,7 +11,7 @@ namespace Test
 
         private List<Model.Member> _memberList50;
 
-        public List<Model.Member> create50membersAnd200BoatsThenSaveTofile()
+        public List<Model.Member> create50membersAnd200Boats()
         {
             _memberList50 = this.create50Members();
             
@@ -35,15 +35,15 @@ namespace Test
 
         private Model.Boat genericBoat()
         {
-            return new Model.Boat(this.RandomBoatType(), this.RandomBoatLength(), this.RandomID());
+            return new Model.Boat(this.randomBoatType(), this.randomBoatLength(), this.randomID());
         }
 
-        private int RandomBoatLength()
+        private int randomBoatLength()
         {
             return _random.Next(1, 15); // 1m to 15m
         }
 
-        private Enums.BoatTypes.Boats RandomBoatType()
+        private Enums.BoatTypes.Boats randomBoatType()
         {
             int generateRandomBoatType = _random.Next(0, 3);
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(generateRandomBoatType);
@@ -64,24 +64,24 @@ namespace Test
         }
         private Model.Member genericMember()
         {
-            return new Model.Member(this.RandomName(), "19" + this.RandomPersonalNumber(), this.RandomID(), _password);
+            return new Model.Member(this.randomName(), "19" + this.randomPersonalNumber(), this.randomID(), _password);
         }
 
-        private string RandomPersonalNumber(int length = 10)
+        private string randomPersonalNumber(int length = 10)
         {
             const string chars = "0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
         }
 
-        private string RandomName(int length = 6)
+        private string randomName(int length = 6)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
         }
 
-        private string RandomID(int length = 6)
+        private string randomID(int length = 6)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
         }
     }

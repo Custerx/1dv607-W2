@@ -8,7 +8,6 @@ namespace Controller
 {
     public abstract class FileController : ISearchController
     {
-        private static Random _random = new Random();
         private int _thisYear = 2018; // Used to calculate age from personalnumber.
 
         public Model.Member getMemberByName(Model.SearchMember searchCriteria)
@@ -127,12 +126,6 @@ namespace Controller
             var systemPath = System.Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
             var path = Path.Combine(systemPath , "JackSparrowBoatClub");
             return path;
-        }
-
-        public string randomID(int length = 6)
-        {
-            const string chars = "0123456789";
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
         }
 
         private bool isBoatOnList(Model.SearchMember searchCriteria, List<Model.Boat> boatList)

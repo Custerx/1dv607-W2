@@ -11,6 +11,7 @@ namespace Controller
         private string _memberID;
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
+        private Model.CreateMember _createMember;
 
         public string MemberID
         { 
@@ -27,6 +28,7 @@ namespace Controller
 
         public MemberController(View.MemberView memberView)
         {
+            this._createMember = new Model.CreateMember();
             this._memberView = memberView;
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
@@ -74,8 +76,9 @@ namespace Controller
             this.loadMemberListFromFile();
 
             string password = this._memberView.getMemberPasswordInput("Chose password: ");
-
-            this._memberModelList.Add(new Model.Member(username, personalNumber, base.randomID(), password));
+            
+            Model.Member member = this._createMember.create(username, personalNumber, password);
+            this._memberModelList.Add(member);
             base.saveToFile(this._memberModelList); 
             
             this._memberView.messageForSuccess("Member successfully registered! Please login.");              

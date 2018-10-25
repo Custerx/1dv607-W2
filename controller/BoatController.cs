@@ -8,9 +8,11 @@ namespace Controller
     public class BoatController : FileController
     {
         private View.BoatView _boatView;
+        private Model.CreateBoat _createBoat;
 
         public BoatController(View.BoatView boatView)
         {
+            this._createBoat = new Model.CreateBoat();
             this._boatView = boatView;
         }
 
@@ -34,7 +36,8 @@ namespace Controller
                     Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
                     int boatLength = this._boatView.getBoatLengthInput();
                     
-                    MemberList[i].Boats.Add(new Model.Boat(boatType, boatLength, base.randomID()));
+                    Model.Boat boat = this._createBoat.create(boatType, boatLength);
+                    MemberList[i].Boats.Add(boat);
                     base.saveToFile(MemberList);
 
                     this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully added!");
@@ -129,7 +132,8 @@ namespace Controller
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
             int boatLength = this._boatView.getBoatLengthInput();
             
-            boatOwner.Boats.Add(new Model.Boat(boatType, boatLength, base.randomID()));
+            Model.Boat boat = this._createBoat.create(boatType, boatLength);
+            boatOwner.Boats.Add(boat);
 
             this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully updated!");
         }

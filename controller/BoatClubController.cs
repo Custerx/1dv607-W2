@@ -21,67 +21,72 @@ namespace Controller
 
         public void run()
         {          
-            int userNavigationChoice = this._menuView.getAuthorizationMenuInput();
+            View.MenuView.MenuChoice userNavigationChoice = this._menuView.getAuthorizationMenuInput();
             this.authorizationNavigation(userNavigationChoice);
         }
 
-        private void authorizationNavigation(int userPreviousChoice)
+        private void authorizationNavigation(View.MenuView.MenuChoice userPreviousChoice)
         {
-            int userNavigationChoice = 0;
+            Controller.MemberController.Login userNavigationChoice = Controller.MemberController.Login.Invalid;
+            View.MenuView.GuestChoice userGuestNavigationChoice = View.MenuView.GuestChoice.Invalid;
+            View.MenuView.StartMenuChoice userStartNavigationChoice = View.MenuView.StartMenuChoice.Invalid;
             
-            if (userPreviousChoice == 0)
+            if (userPreviousChoice == View.MenuView.MenuChoice.Login)
             {
                 userNavigationChoice = this._memberController.authorization();
             }
 
-            if (userPreviousChoice == 1)
+            if (userPreviousChoice == View.MenuView.MenuChoice.Register)
             {
                 this._memberController.registerMemberOnList();
             }
 
-            if (userPreviousChoice == 2) // Guest
+            if (userPreviousChoice == View.MenuView.MenuChoice.Guest)
             {
-                userNavigationChoice = this._menuView.getGuestMenuInput();
-                this.guestNavigation(userNavigationChoice);
+                userGuestNavigationChoice = this._menuView.getGuestMenuInput();
+                this.guestNavigation(userGuestNavigationChoice);
             }
 
-            if (userPreviousChoice == 3)
+            if (userPreviousChoice == View.MenuView.MenuChoice.Exit)
             {
                 this._menuView.ExitMessage();
             }
 
-            if (userNavigationChoice == 1) // Authorized user.
+            if (userNavigationChoice == Controller.MemberController.Login.Success)
             {
-                userNavigationChoice = this._menuView.getNavigationMenuInput();
-                this.navigation(userNavigationChoice);
+                userStartNavigationChoice = this._menuView.getNavigationMenuInput();
+                this.navigation(userStartNavigationChoice);
             } else
             {
                 this.run();
             }
         }
 
-        private void navigation(int userPreviousChoice)
+        private void navigation(View.MenuView.StartMenuChoice userPreviousChoice)
         {
-            int userNavigationChoice;
-            if (userPreviousChoice == 0)
+            View.MenuView.BoatMenuChoice userBoatNavigationChoice = View.MenuView.BoatMenuChoice.Invalid;
+            View.MenuView.SearchMenuChoice userSearchNavigationChoice = View.MenuView.SearchMenuChoice.Invalid;
+            View.MenuView.MemberMenuChoice userMemberNavigationChoice = View.MenuView.MemberMenuChoice.Invalid;
+
+            if (userPreviousChoice == View.MenuView.StartMenuChoice.Member)
             {
-                userNavigationChoice = this._menuView.getMemberMenuInput();
-                this.memberNavigation(userNavigationChoice);
+                userMemberNavigationChoice = this._menuView.getMemberMenuInput();
+                this.memberNavigation(userMemberNavigationChoice);
             }
 
-            if (userPreviousChoice == 1)
+            if (userPreviousChoice == View.MenuView.StartMenuChoice.Boat)
             {
-                userNavigationChoice = this._menuView.getBoatMenuInput();
-                this.boatNavigation(userNavigationChoice);
+                userBoatNavigationChoice = this._menuView.getBoatMenuInput();
+                this.boatNavigation(userBoatNavigationChoice);
             }
 
-            if (userPreviousChoice == 2)
+            if (userPreviousChoice == View.MenuView.StartMenuChoice.Search)
             {
-                userNavigationChoice = this._menuView.getSearchMenuInput();
-                this.searchNavigation(userNavigationChoice, false);
+                userSearchNavigationChoice = this._menuView.getSearchMenuInput();
+                this.searchNavigation(userSearchNavigationChoice, false);
             }
 
-            if (userPreviousChoice == 3)
+            if (userPreviousChoice == View.MenuView.StartMenuChoice.Exit)
             {
                 this._menuView.ExitMessage();
             }
@@ -89,31 +94,32 @@ namespace Controller
             this.run(); // Display start menu.
         }
 
-        private void searchNavigation(int userPreviousChoice, bool guest)
+        private void searchNavigation(View.MenuView.SearchMenuChoice userPreviousChoice, bool guest)
         {
-            int userNavigationChoice;
+            View.MenuView.StartMenuChoice userNavigationChoice = View.MenuView.StartMenuChoice.Invalid;
+            View.MenuView.GuestChoice userGuestNavigationChoice = View.MenuView.GuestChoice.Invalid;
 
-            if (userPreviousChoice == 0)
+            if (userPreviousChoice == View.MenuView.SearchMenuChoice.Username)
             {
                 this._memberController.searchAndViewMembersByName(false);
             }
 
-            if (userPreviousChoice == 1)
+            if (userPreviousChoice == View.MenuView.SearchMenuChoice.Age)
             {
                 this._memberController.searchAndViewMembersByAge();
             }
 
-            if (userPreviousChoice == 2)
+            if (userPreviousChoice == View.MenuView.SearchMenuChoice.UsernameBoatType)
             {
                 this._memberController.searchAndViewMembersByNameBoatType();
             }
 
-            if (userPreviousChoice == 3)
+            if (userPreviousChoice == View.MenuView.SearchMenuChoice.Back)
             {
                 if(guest)
                 {
-                    userNavigationChoice = this._menuView.getGuestMenuInput();
-                    this.guestNavigation(userNavigationChoice);
+                    userGuestNavigationChoice = this._menuView.getGuestMenuInput();
+                    this.guestNavigation(userGuestNavigationChoice);
                 } else
                 {
                     userNavigationChoice = this._menuView.getNavigationMenuInput();
@@ -121,111 +127,112 @@ namespace Controller
                 }
             }
 
-            this.navigation(2); // Display search-menu.
+            this.navigation(View.MenuView.StartMenuChoice.Search);
         }
 
-        private void boatNavigation(int userPreviousChoice)
+        private void boatNavigation(View.MenuView.BoatMenuChoice userPreviousChoice)
         {
-            int userNavigationChoice;
+            View.MenuView.StartMenuChoice userNavigationChoice = View.MenuView.StartMenuChoice.Invalid;
 
-            if (userPreviousChoice == 0)
+            if (userPreviousChoice == View.MenuView.BoatMenuChoice.Register)
             {
                 this._boatController.registerBoatOnList();
             }
 
-            if (userPreviousChoice == 1)
+            if (userPreviousChoice == View.MenuView.BoatMenuChoice.Update)
             {
                 this._boatController.delete_Update_View_BoatFromList("Update");
             }
 
-            if (userPreviousChoice == 2)
+            if (userPreviousChoice == View.MenuView.BoatMenuChoice.Delete)
             {
                 this._boatController.delete_Update_View_BoatFromList("Delete");
             }
 
-            if (userPreviousChoice == 3)
+            if (userPreviousChoice == View.MenuView.BoatMenuChoice.View)
             {
                 this._boatController.delete_Update_View_BoatFromList("View");
             }          
 
-            if (userPreviousChoice == 4)
+            if (userPreviousChoice == View.MenuView.BoatMenuChoice.ClubsBoatlist)
             {
                 this._boatController.listBoatClubBoats();
             }
 
-            if (userPreviousChoice == 5)
+            if (userPreviousChoice == View.MenuView.BoatMenuChoice.Back)
             {
                 userNavigationChoice = this._menuView.getNavigationMenuInput();
                 this.navigation(userNavigationChoice);
             }
 
-            this.navigation(1); // Display boat-menu.
+            this.navigation(View.MenuView.StartMenuChoice.Boat);
         }
 
-        private void memberNavigation(int userPreviousChoice)
+        private void memberNavigation(View.MenuView.MemberMenuChoice userPreviousChoice)
         {
-            int userNavigationChoice;
+            View.MenuView.StartMenuChoice userNavigationChoice = View.MenuView.StartMenuChoice.Invalid;
 
-            if (userPreviousChoice == 0)
+            if (userPreviousChoice == View.MenuView.MemberMenuChoice.Compactlist)
             {
                 this._memberController.compactList();
             } 
             
-            if (userPreviousChoice == 1)
+            if (userPreviousChoice == View.MenuView.MemberMenuChoice.Verboselist)
             {
                 this._memberController.verboseList();
             }   
             
-            if (userPreviousChoice == 2)
+            if (userPreviousChoice == View.MenuView.MemberMenuChoice.Update)
             {
                 this._memberController.updateMemberOnList();
             }   
             
-            if (userPreviousChoice == 3)
+            if (userPreviousChoice == View.MenuView.MemberMenuChoice.Delete)
             {
                 this._memberController.deleteMemberFromList();
             }  
             
-            if (userPreviousChoice == 4)
+            if (userPreviousChoice == View.MenuView.MemberMenuChoice.Back)
             {
                 userNavigationChoice = this._menuView.getNavigationMenuInput();
                 this.navigation(userNavigationChoice);
             }
             
-            this.navigation(0); // Display member-menu.
+            this.navigation(View.MenuView.StartMenuChoice.Member);
         }
 
-        private void guestNavigation(int userPreviousChoice)
+        private void guestNavigation(View.MenuView.GuestChoice userPreviousChoice)
         {
-            int userNavigationChoice;
+            View.MenuView.GuestChoice userNavigationChoice = View.MenuView.GuestChoice.Invalid;
+            View.MenuView.SearchMenuChoice userSearchNavigationChoice = View.MenuView.SearchMenuChoice.Invalid;
 
-            if (userPreviousChoice == 0)
+            if (userPreviousChoice == View.MenuView.GuestChoice.Compactlist)
             {
                 this._memberController.compactList();
             } 
             
-            if (userPreviousChoice == 1)
+            if (userPreviousChoice == View.MenuView.GuestChoice.Verboselist)
             {
                 this._memberController.verboseList();
             }
 
-            if (userPreviousChoice == 2)
+            if (userPreviousChoice == View.MenuView.GuestChoice.ClubsBoatlist)
             {
                 this._boatController.listBoatClubBoats();
             }
             
-            if (userPreviousChoice == 3) // Search
+            if (userPreviousChoice == View.MenuView.GuestChoice.Search)
             {
-                userNavigationChoice = this._menuView.getSearchMenuInput();
-                this.searchNavigation(userNavigationChoice, true);
+                userSearchNavigationChoice = this._menuView.getSearchMenuInput();
+                this.searchNavigation(userSearchNavigationChoice, true);
             }   
             
-            if (userPreviousChoice == 4)
+            if (userPreviousChoice == View.MenuView.GuestChoice.Exit)
             {
                 this._menuView.ExitMessage();
             }
             
-            this.authorizationNavigation(2); // Display guest-menu.
+            this.authorizationNavigation(View.MenuView.MenuChoice.Guest); // Display guest-menu.
         }
     }
 }

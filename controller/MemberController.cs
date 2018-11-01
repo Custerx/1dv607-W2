@@ -26,6 +26,13 @@ namespace Controller
             }            
         }
 
+        public enum Login
+        {
+            Success,
+            Failed,
+            Invalid
+        }
+
         public MemberController(View.MemberView memberView)
         {
             this._createMember = new Model.CreateMember();
@@ -122,7 +129,7 @@ namespace Controller
             this._memberView.messageForError("Member not found!");
         }
 
-        public int authorization()
+        public Login authorization()
         {
             string username = this._memberView.getUsernameInput("Username: ");
             string password = this._memberView.getMemberPasswordInput("Password: ");
@@ -132,16 +139,16 @@ namespace Controller
             if (member == null)
             {
                 this._memberView.messageForError("Wrong username or password.");
-                return 0;
+                return Login.Invalid;
             } else if (member.Password.Equals(password))
             {
                 this._memberView.messageForSuccess("Welcome " + username + "!");
                 this.MemberID = member.MemberID;
-                return 1;
+                return Login.Success;
             } else
             {
                 this._memberView.messageForError("Wrong username or password.");
-                return 0;
+                return Login.Failed;
             }
         }
 

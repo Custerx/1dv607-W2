@@ -34,11 +34,11 @@ namespace Controller
             Invalid
         }
 
-        public MemberController(View.MemberView a_memberView, Model.Search.SearchFactory a_searchFactory)
+        public MemberController()
         {
             this._createMember = new Model.CreateMember();
-            this._memberView = a_memberView;
-            this._searchFactory = a_searchFactory;
+            this._memberView = new View.MemberView();
+            this._searchFactory = new Model.Search.SearchFactory();
 
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {

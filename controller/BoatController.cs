@@ -17,10 +17,10 @@ namespace Controller
             View
         }
 
-        public BoatController(View.BoatView boatView)
+        public BoatController()
         {
             this._createBoat = new Model.CreateBoat();
-            this._boatView = boatView;
+            this._boatView = new View.BoatView();
         }
 
         public void listBoatClubBoats()

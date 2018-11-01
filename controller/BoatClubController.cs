@@ -5,20 +5,14 @@ namespace Controller
 {
     public class BoatClubController
     {
-        private View.MemberView _memberView;
-        private View.BoatView _boatView;
         private View.MenuView _menuView;
         private Controller.MemberController _memberController;
         private Controller.BoatController _boatController;
-        private Model.Search.SearchFactory _searchFactory;
 
         public BoatClubController() {
-            this._boatView = new View.BoatView();
-            this._memberView = new View.MemberView();
             this._menuView = new View.MenuView();
-            this._searchFactory = new Model.Search.SearchFactory();
-            this._memberController = new Controller.MemberController(this._memberView, this._searchFactory);
-            this._boatController = new Controller.BoatController(this._boatView);
+            this._memberController = new Controller.MemberController();
+            this._boatController = new Controller.BoatController();
         }
 
         public void run()

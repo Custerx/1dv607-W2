@@ -15,29 +15,53 @@ namespace View
             Invalid
         }
 
-        private MenuChoice getMenuChoice(int choice)
+        public enum GuestChoice
         {
-            if (choice == 0)
-            {
-                return MenuChoice.Login;
-            }
-            
-            if (choice == 1)
-            {
-                return MenuChoice.Register;
-            }
+            Compactlist,
+            Verboselist,
+            ClubsBoatlist,
+            Search,
+            Exit,
+            Invalid
+        }
 
-            if (choice == 2)
-            {
-                return MenuChoice.Guest;
-            }
+        public enum StartMenuChoice
+        {
+            Member,
+            Boat,
+            Search,
+            Exit,
+            Invalid
+        }
 
-            if (choice == 3)
-            {
-                return MenuChoice.Exit;
-            }
+        public enum BoatMenuChoice
+        {
+            Register,
+            Update,
+            Delete,
+            View,
+            ClubsBoatlist,
+            Back,
+            Invalid
+        }
 
-            return MenuChoice.Invalid;
+        public enum SearchMenuChoice
+        {
+            Username,
+            Age,
+            UsernameBoatType,
+            Back,
+            Invalid
+        }
+
+        public enum MemberMenuChoice
+        {
+            Compactlist,
+            Verboselist,
+            Update,
+            Delete,
+            Back,
+            Invalid
         }
 
         public MenuChoice getAuthorizationMenuInput()
@@ -73,46 +97,6 @@ namespace View
             }
         }
 
-        public enum GuestChoice
-        {
-            Compactlist,
-            Verboselist,
-            ClubsBoatlist,
-            Search,
-            Exit,
-            Invalid
-        }
-
-        private GuestChoice getGuestMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return GuestChoice.Compactlist;
-            }
-            
-            if (choice == 1)
-            {
-                return GuestChoice.Verboselist;
-            }
-
-            if (choice == 2)
-            {
-                return GuestChoice.ClubsBoatlist;
-            }
-
-            if (choice == 3)
-            {
-                return GuestChoice.Search;
-            }
-
-            if (choice == 4)
-            {
-                return GuestChoice.Exit;
-            }
-
-            return GuestChoice.Invalid;
-        }
-
         public GuestChoice getGuestMenuInput()
         {
             string input;
@@ -146,40 +130,6 @@ namespace View
             }
         }
 
-        public enum StartMenuChoice
-        {
-            Member,
-            Boat,
-            Search,
-            Exit,
-            Invalid
-        }
-
-        private StartMenuChoice getStartMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return StartMenuChoice.Member;
-            }
-            
-            if (choice == 1)
-            {
-                return StartMenuChoice.Boat;
-            }
-
-            if (choice == 2)
-            {
-                return StartMenuChoice.Search;
-            }
-
-            if (choice == 3)
-            {
-                return StartMenuChoice.Exit;
-            }
-
-            return StartMenuChoice.Invalid;
-        }
-
         public StartMenuChoice getNavigationMenuInput()
         {
             string input;
@@ -211,52 +161,6 @@ namespace View
                     Console.ResetColor();
                 }
             }
-        }
-
-        public enum BoatMenuChoice
-        {
-            Register,
-            Update,
-            Delete,
-            View,
-            ClubsBoatlist,
-            Back,
-            Invalid
-        }
-
-        private BoatMenuChoice getBoatMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return BoatMenuChoice.Register;
-            }
-            
-            if (choice == 1)
-            {
-                return BoatMenuChoice.Update;
-            }
-
-            if (choice == 2)
-            {
-                return BoatMenuChoice.Delete;
-            }
-
-            if (choice == 3)
-            {
-                return BoatMenuChoice.View;
-            }
-
-            if (choice == 4)
-            {
-                return BoatMenuChoice.ClubsBoatlist;
-            }
-
-            if (choice == 5)
-            {
-                return BoatMenuChoice.Back;
-            }
-
-            return BoatMenuChoice.Invalid;
         }
 
         public BoatMenuChoice getBoatMenuInput()
@@ -297,40 +201,6 @@ namespace View
             }
         }
 
-        public enum SearchMenuChoice
-        {
-            Username,
-            Age,
-            UsernameBoatType,
-            Back,
-            Invalid
-        }
-
-        private SearchMenuChoice getSearchMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return SearchMenuChoice.Username;
-            }
-            
-            if (choice == 1)
-            {
-                return SearchMenuChoice.Age;
-            }
-
-            if (choice == 2)
-            {
-                return SearchMenuChoice.UsernameBoatType;
-            }
-
-            if (choice == 3)
-            {
-                return SearchMenuChoice.Back;
-            }
-
-            return SearchMenuChoice.Invalid;
-        }
-
         public SearchMenuChoice getSearchMenuInput()
         {
             string input;
@@ -367,46 +237,6 @@ namespace View
                     Console.ResetColor();
                 }
             }
-        }
-
-        public enum MemberMenuChoice
-        {
-            Compactlist,
-            Verboselist,
-            Update,
-            Delete,
-            Back,
-            Invalid
-        }
-
-        private MemberMenuChoice getMemberMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return MemberMenuChoice.Compactlist;
-            }
-            
-            if (choice == 1)
-            {
-                return MemberMenuChoice.Verboselist;
-            }
-
-            if (choice == 2)
-            {
-                return MemberMenuChoice.Update;
-            }
-
-            if (choice == 3)
-            {
-                return MemberMenuChoice.Delete;
-            }
-
-            if (choice == 4)
-            {
-                return MemberMenuChoice.Back;
-            }
-
-            return MemberMenuChoice.Invalid;
         }
 
         public MemberMenuChoice getMemberMenuInput()
@@ -454,6 +284,176 @@ namespace View
             Console.Write("\nGoodbye!\n");
             Console.ResetColor();
             Environment.Exit(0);
+        }
+
+        private MenuChoice getMenuChoice(int choice)
+        {
+            if (choice == 0)
+            {
+                return MenuChoice.Login;
+            }
+            
+            if (choice == 1)
+            {
+                return MenuChoice.Register;
+            }
+
+            if (choice == 2)
+            {
+                return MenuChoice.Guest;
+            }
+
+            if (choice == 3)
+            {
+                return MenuChoice.Exit;
+            }
+
+            return MenuChoice.Invalid;
+        }
+
+        private GuestChoice getGuestMenuChoice(int choice)
+        {
+            if (choice == 0)
+            {
+                return GuestChoice.Compactlist;
+            }
+            
+            if (choice == 1)
+            {
+                return GuestChoice.Verboselist;
+            }
+
+            if (choice == 2)
+            {
+                return GuestChoice.ClubsBoatlist;
+            }
+
+            if (choice == 3)
+            {
+                return GuestChoice.Search;
+            }
+
+            if (choice == 4)
+            {
+                return GuestChoice.Exit;
+            }
+
+            return GuestChoice.Invalid;
+        }
+
+        private StartMenuChoice getStartMenuChoice(int choice)
+        {
+            if (choice == 0)
+            {
+                return StartMenuChoice.Member;
+            }
+            
+            if (choice == 1)
+            {
+                return StartMenuChoice.Boat;
+            }
+
+            if (choice == 2)
+            {
+                return StartMenuChoice.Search;
+            }
+
+            if (choice == 3)
+            {
+                return StartMenuChoice.Exit;
+            }
+
+            return StartMenuChoice.Invalid;
+        }
+
+        private BoatMenuChoice getBoatMenuChoice(int choice)
+        {
+            if (choice == 0)
+            {
+                return BoatMenuChoice.Register;
+            }
+            
+            if (choice == 1)
+            {
+                return BoatMenuChoice.Update;
+            }
+
+            if (choice == 2)
+            {
+                return BoatMenuChoice.Delete;
+            }
+
+            if (choice == 3)
+            {
+                return BoatMenuChoice.View;
+            }
+
+            if (choice == 4)
+            {
+                return BoatMenuChoice.ClubsBoatlist;
+            }
+
+            if (choice == 5)
+            {
+                return BoatMenuChoice.Back;
+            }
+
+            return BoatMenuChoice.Invalid;
+        }
+
+        private SearchMenuChoice getSearchMenuChoice(int choice)
+        {
+            if (choice == 0)
+            {
+                return SearchMenuChoice.Username;
+            }
+            
+            if (choice == 1)
+            {
+                return SearchMenuChoice.Age;
+            }
+
+            if (choice == 2)
+            {
+                return SearchMenuChoice.UsernameBoatType;
+            }
+
+            if (choice == 3)
+            {
+                return SearchMenuChoice.Back;
+            }
+
+            return SearchMenuChoice.Invalid;
+        }
+
+        private MemberMenuChoice getMemberMenuChoice(int choice)
+        {
+            if (choice == 0)
+            {
+                return MemberMenuChoice.Compactlist;
+            }
+            
+            if (choice == 1)
+            {
+                return MemberMenuChoice.Verboselist;
+            }
+
+            if (choice == 2)
+            {
+                return MemberMenuChoice.Update;
+            }
+
+            if (choice == 3)
+            {
+                return MemberMenuChoice.Delete;
+            }
+
+            if (choice == 4)
+            {
+                return MemberMenuChoice.Back;
+            }
+
+            return MemberMenuChoice.Invalid;
         }
     }
 }

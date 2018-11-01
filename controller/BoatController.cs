@@ -5,10 +5,17 @@ using Newtonsoft.Json;
 
 namespace Controller
 {
-    public class BoatController : FileController
+    public class BoatController : Model.Database
     {
         private View.BoatView _boatView;
         private Model.CreateBoat _createBoat;
+
+        public enum Alternatives
+        {
+            Delete,
+            Update,
+            View
+        }
 
         public BoatController(View.BoatView boatView)
         {
@@ -49,7 +56,7 @@ namespace Controller
             this._boatView.messageForError("No matching member!");
         }
 
-        public void delete_Update_View_BoatFromList(string action) 
+        public void delete_Update_View_BoatFromList(Alternatives action) 
         {
             List<Model.Member> memberList = base.LoadMemberList();
 
@@ -57,7 +64,7 @@ namespace Controller
             base.saveToFile(memberList);
         }
 
-        private List<Model.Member> delete_Update_View_BoatDetails(List<Model.Member> viewMemberList, string action)
+        private List<Model.Member> delete_Update_View_BoatDetails(List<Model.Member> viewMemberList, Alternatives action)
         {
             string id = this._boatView.getIDInput("The boat owner's 6-character ID: ");
 
@@ -66,17 +73,17 @@ namespace Controller
                 if (viewMemberList[i].MemberID == id) {
                     this._boatView.messageForSuccess("Member " + viewMemberList[i].Name + " successfully retrieved!");
                     
-                    if (action == "Delete")
+                    if (action == Alternatives.Delete)
                     {
                         this.deleteBoat(viewMemberList[i]);
                     }
 
-                    if (action == "Update")
+                    if (action == Alternatives.Update)
                     {
                         this.updateBoatOnList(viewMemberList[i]);
                     }
 
-                    if (action == "View")
+                    if (action == Alternatives.View)
                     {
                         this._boatView.viewMemberBoats(viewMemberList[i]);
                     }

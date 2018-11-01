@@ -6,12 +6,13 @@ using Newtonsoft.Json;
 
 namespace Controller
 {
-    public class MemberController : FileController
+    public class MemberController : Model.Database
     {
         private string _memberID;
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
         private Model.CreateMember _createMember;
+        private Model.Search.SearchFactory _searchFactory;
 
         public string MemberID
         { 
@@ -33,10 +34,12 @@ namespace Controller
             Invalid
         }
 
-        public MemberController(View.MemberView memberView)
+        public MemberController(View.MemberView a_memberView, Model.Search.SearchFactory a_searchFactory)
         {
             this._createMember = new Model.CreateMember();
-            this._memberView = memberView;
+            this._memberView = a_memberView;
+            this._searchFactory = a_searchFactory;
+
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
                 var memberList = new Test.MemberList();
@@ -164,7 +167,8 @@ namespace Controller
             int boatTypeAsNumber = this._memberView.getBoatTypeInput();
             Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
 
-            List<Model.Member> memberList_ByNameAndBoatType = base.getList_Member_NameAndBoatType(new Model.SearchMember{BoatType = boatType}, memberList_ByName);
+            Model.Search.ISearchMultipleStrategy compareAgeSearchStrategy = _searchFactory.getMultipleNameAndBoatSearch();
+            List<Model.Member> memberList_ByNameAndBoatType = compareAgeSearchStrategy.multipleSearch(new Model.SearchMember{BoatType = boatType}, memberList_ByName);
 
             if (memberList_ByNameAndBoatType.Count < 1)
             {
@@ -182,7 +186,8 @@ namespace Controller
             string personalNumber = this._memberView.getPersonalnumberInput("Get members according to age. Type personal-number to be set as reference, example [198907076154]: ");
             bool younger = this._memberView.getBoolInput();
 
-            List<Model.Member> memberList = base.getList_Member_Age(new Model.SearchMember{PersonalNumber = personalNumber}, younger);
+            Model.Search.ISearchCompareAgeStrategy compareAgeSearchStrategy = _searchFactory.getCompareAgeSearch();
+            List<Model.Member> memberList = compareAgeSearchStrategy.compareAgeSearch(new Model.SearchMember{PersonalNumber = personalNumber}, younger);
 
             if (memberList.Count < 1)
             {
@@ -212,7 +217,9 @@ namespace Controller
         public List<Model.Member> searchAndViewMembersByName(bool extendedSearch)
         {
             string searchString = this._memberView.getSearchInput("Get all username(s) with character(s): ");
-            List<Model.Member> memberList = base.getList_Member_Name(new Model.SearchMember{SearchString = searchString});
+            
+            Model.Search.ISearchGenericStrategy genericSearchStrategy = _searchFactory.getGenericCharacterSearch();
+            List<Model.Member> memberList = genericSearchStrategy.genericSearch(new Model.SearchMember{SearchString = searchString});
 
             if (memberList.Count < 1)
             {
@@ -260,7 +267,8 @@ namespace Controller
 
         private Model.Member searchForMemberByName(string name)
         {
-            Model.Member Member = base.getMemberByName(new Model.SearchMember{Name = name});
+            Model.Search.ISearchUniqueStrategy uniqueSearchStrategy = _searchFactory.getUniqueMemberSearch();
+            Model.Member Member = uniqueSearchStrategy.uniqueSearch(new Model.SearchMember{Name = name});
             return Member;
         }
 
@@ -284,7 +292,8 @@ namespace Controller
 
         private Model.Member searchForMemberByPersonalNumber(string personalNumber)
         {
-            Model.Member Member = base.getMemberByPersonalNumber(new Model.SearchMember{PersonalNumber = personalNumber});
+            Model.Search.ISearchUniqueStrategy searchForMember = _searchFactory.getUniqueMemberSearch();
+            Model.Member Member = searchForMember.uniqueSearch(new Model.SearchMember{PersonalNumber = personalNumber});
             return Member;
         }
     }

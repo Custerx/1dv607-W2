@@ -42,7 +42,7 @@ namespace Controller
 
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
-                var memberList = new Test.MemberList();
+                var memberList = new Test.MemberList(this._createMember);
                 List<Model.Member> memberListForTesting = memberList.create50membersAnd200Boats();
 
                 base.saveToFile(memberListForTesting);
@@ -219,7 +219,7 @@ namespace Controller
             string searchString = this._memberView.getSearchInput("Get all username(s) with character(s): ");
             
             Model.Search.ISearchGenericStrategy genericSearchStrategy = _searchFactory.getGenericCharacterSearch();
-            List<Model.Member> memberList = genericSearchStrategy.genericSearch(new Model.SearchMember{SearchString = searchString});
+            List<Model.Member> memberList = genericSearchStrategy.characterSearch(new Model.SearchMember{SearchString = searchString});
 
             if (memberList.Count < 1)
             {

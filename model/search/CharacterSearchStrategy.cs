@@ -5,7 +5,7 @@ namespace Model.Search
 {
     public class CharacterSearchStrategy : Model.Database, ISearchGenericStrategy
     {
-        public List<Model.Member> genericSearch(Model.SearchMember searchCriteria)
+        public List<Model.Member> characterSearch(Model.SearchMember searchCriteria)
         {
             List<Model.Member> memberList = base.LoadMemberList();
             List<Model.Member> memberList_ByName = new List<Model.Member>();

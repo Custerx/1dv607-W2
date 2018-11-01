@@ -8,7 +8,7 @@ namespace Test
     {
         private static Random _random = new Random();
         private string _password = "testtest";
-
+        private Model.CreateMember m_createMember;
         private List<Model.Member> _memberList50;
 
         public List<Model.Member> create50membersAnd200Boats()
@@ -21,6 +21,11 @@ namespace Test
             }
 
             return _memberList50;
+        }
+
+        public MemberList(Model.CreateMember a_createMember)
+        {
+            m_createMember = a_createMember;
         }
 
         private void create4Boats(Model.Member memberToGet4Boats)
@@ -64,7 +69,7 @@ namespace Test
         }
         private Model.Member genericMember()
         {
-            return new Model.Member(this.randomName(), "19" + this.randomPersonalNumber(), this.randomID(), _password);
+            return m_createMember.create(this.randomName(), "19" + this.randomPersonalNumber(), _password);
         }
 
         private string randomPersonalNumber(int length = 10)

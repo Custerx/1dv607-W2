@@ -4,6 +4,6 @@ namespace Model.Search
 {
     public interface ISearchGenericStrategy
     {
-        List<Model.Member> genericSearch(Model.SearchMember searchCriteria);
+        List<Model.Member> characterSearch(Model.SearchMember searchCriteria);
     }
 }

@@ -50,6 +50,7 @@ namespace View
             Username,
             Age,
             UsernameBoatType,
+            HardcodedGrade4Example,
             Back,
             Invalid
         }
@@ -212,7 +213,7 @@ namespace View
                     Console.BackgroundColor = ConsoleColor.DarkBlue;
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("Search-system for Jack Sparrow's Boatclub");
-                    Console.Write("\nSearch-menu: [0] = [Username], [1] = [Age], [2] = [Username + BoatType], [3] = [Back]. Navigate with a number between 0 and 3.\n");
+                    Console.Write("\nSearch-menu: [0] = [Username], [1] = [Age], [2] = [Username + BoatType], [3] = [HardcodedGrade4Example], [4] = [Back]. Navigate with a number between 0 and 4.\n");
                     Console.ResetColor();
                     input = Console.ReadLine();
 
@@ -222,7 +223,7 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    if (!input.All(c => c >= '0' && c <= '3'))
+                    if (!input.All(c => c >= '0' && c <= '4'))
                     {
                         throw new ApplicationException();
                     }
@@ -233,7 +234,7 @@ namespace View
                 {
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("\nError! Your choice must contain 1 number between 0 and 3.\n");
+                    Console.WriteLine("\nError! Your choice must contain 1 number between 0 and 4.\n");
                     Console.ResetColor();
                 }
             }
@@ -419,6 +420,11 @@ namespace View
             }
 
             if (choice == 3)
+            {
+                return SearchMenuChoice.HardcodedGrade4Example;
+            }
+
+            if (choice == 4)
             {
                 return SearchMenuChoice.Back;
             }

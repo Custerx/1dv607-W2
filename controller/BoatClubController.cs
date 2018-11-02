@@ -112,6 +112,11 @@ namespace Controller
                 this._searchController.searchAndViewMembersByNameBoatType();
             }
 
+            if (userPreviousChoice == View.MenuView.SearchMenuChoice.HardcodedGrade4Example)
+            {
+                this._searchController.hardcodedGrade4Example();
+            }
+
             if (userPreviousChoice == View.MenuView.SearchMenuChoice.Back)
             {
                 if(guest)
@@ -229,7 +234,7 @@ namespace Controller
                 this._menuView.ExitMessage();
             }
             
-            this.authorizationNavigation(View.MenuView.MenuChoice.Guest); // Display guest-menu.
+            this.authorizationNavigation(View.MenuView.MenuChoice.Guest);
         }
     }
 }

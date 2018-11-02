@@ -10,6 +10,7 @@ namespace Controller
         private Model.Search.ISearchMultipleStrategy _searchNameAndBoat;
         private Model.Search.ISearchCompareAgeStrategy _compareAgeSearch;
         private Model.Search.ISearchCharacterStrategy _searchCharacterUsername;
+        private Model.Search.ISearchCharacterStrategy _searchCharacterPersonalnumber;
         private Model.Search.ISearchUniqueStrategy _uniqueNameSearch;
         private Model.Search.ISearchUniqueStrategy _uniquePersonalnumberSearch;
 
@@ -21,9 +22,71 @@ namespace Controller
             this._searchNameAndBoat = _searchFactory.getMultipleSearch_NameAndBoat();
             this._compareAgeSearch = _searchFactory.getCompareAgeSearch();
             this._searchCharacterUsername = _searchFactory.getCharacterUsernameSearch();
+            this._searchCharacterPersonalnumber = _searchFactory.getCharacterPersonalnumberSearch();
             this._uniqueNameSearch = _searchFactory.getUniqueNameSearch();
             this._uniquePersonalnumberSearch = _searchFactory.getUniquePersonalnumberSearch();
         }
+
+        public void hardcodedGrade4Example()
+        {
+            this.complexSearchGrade4("r", "1988", "199406043654", false, Enums.BoatTypes.Boats.Sailboat); // Hardcoded.
+        }
+
+        public void complexSearchGrade4(string a_username, string a_birthYear, string a_personalNumber, bool a_younger, Enums.BoatTypes.Boats a_boatType)
+        {      
+            List<Model.Member> memberList = this._searchCharacterUsername.characterSearch(new Model.SearchMember{SearchString = a_username});
+
+            if (memberList.Count < 1)
+            {
+                this._memberView.messageForError("No username matched with your character(s).");
+                return;
+            }
+         
+            memberList = this._searchCharacterPersonalnumber.characterSearch(new Model.SearchMember{SearchString = a_birthYear});
+
+            if (memberList.Count < 1)
+            {
+                this._memberView.messageForError("No personalnumber matched with your character(s).");
+                return;
+            }
+
+            memberList = this._compareAgeSearch.compareAgeSearch(new Model.SearchMember{PersonalNumber = a_personalNumber}, a_younger);
+
+            if (memberList.Count < 1)
+            {
+                if (a_younger)
+                {
+                    this._memberView.messageForError("No members are younger than your personalnumber.");
+                } else
+                {
+                    this._memberView.messageForError("No members are older than your personalnumber.");
+                }
+
+                return;
+            } else
+            {
+                if (a_younger)
+                {
+                    this._memberView.messageForSuccess("Following members are younger than your personalnumber.");
+                } else
+                {
+                    this._memberView.messageForSuccess("Following members are older than your personalnumber.");
+                }
+            }
+
+            memberList = this._searchNameAndBoat.multipleSearch(new Model.SearchMember{BoatType = a_boatType}, memberList);
+
+            if (memberList.Count < 1)
+            {
+                this._memberView.messageForError("No member matched with your boat type.");
+                return;
+            } else
+            {
+                this._memberView.messageForSuccess("Following member(s) matched with your search criteria(s).");
+                this._memberView.viewVerboseList(memberList);
+            }
+        }
+
         public void searchAndViewMembersByNameBoatType()
         {
             List<Model.Member> memberList_ByName = this.searchAndViewMembersByName(true);

@@ -30,30 +30,31 @@ namespace Controller
         public void hardcodedGrade4Example()
         {
             this.complexSearchGrade4("r", "1988", "199406043654", false, Enums.BoatTypes.Boats.Sailboat); // Hardcoded.
+            this.complexSearchGrade4("e", "197", "199406043654", false, Enums.BoatTypes.Boats.Motorsailer); // Hardcoded.
         }
 
         public void complexSearchGrade4(string a_username, string a_birthYear, string a_personalNumber, bool a_younger, Enums.BoatTypes.Boats a_boatType)
         {
             List<Model.Member> completeMemberList = base.LoadMemberList();      
-            List<Model.Member> memberList = this._searchCharacterUsername.characterSearch(new Model.SearchMember{SearchString = a_username}, completeMemberList);
+            List<Model.Member> firstMatchMemberList = this._searchCharacterUsername.characterSearch(new Model.SearchMember{SearchString = a_username}, completeMemberList);
 
-            if (memberList.Count < 1)
+            if (firstMatchMemberList.Count < 1)
             {
                 this._memberView.messageForError("No username matched with your character(s).");
                 return;
             }
          
-            memberList = this._searchCharacterPersonalnumber.characterSearch(new Model.SearchMember{SearchString = a_birthYear}, memberList);
+            List<Model.Member> secondMatchMemberList = this._searchCharacterPersonalnumber.characterSearch(new Model.SearchMember{SearchString = a_birthYear}, firstMatchMemberList);
 
-            if (memberList.Count < 1)
+            if (secondMatchMemberList.Count < 1)
             {
                 this._memberView.messageForError("No personalnumber matched with your character(s).");
                 return;
             }
 
-            memberList = this._compareAgeSearch.compareAgeSearch(new Model.SearchMember{PersonalNumber = a_personalNumber}, a_younger, memberList);
+            List<Model.Member> thirdMatchMemberList = this._compareAgeSearch.compareAgeSearch(new Model.SearchMember{PersonalNumber = a_personalNumber}, a_younger, secondMatchMemberList);
 
-            if (memberList.Count < 1)
+            if (thirdMatchMemberList.Count < 1)
             {
                 if (a_younger)
                 {
@@ -64,27 +65,18 @@ namespace Controller
                 }
 
                 return;
-            } else
-            {
-                if (a_younger)
-                {
-                    this._memberView.messageForSuccess("Following members are younger than your personalnumber.");
-                } else
-                {
-                    this._memberView.messageForSuccess("Following members are older than your personalnumber.");
-                }
             }
 
-            memberList = this._searchNameAndBoat.multipleSearch(new Model.SearchMember{BoatType = a_boatType}, memberList);
+            List<Model.Member> fourthMatchMemberList = this._searchNameAndBoat.multipleSearch(new Model.SearchMember{BoatType = a_boatType}, thirdMatchMemberList);
 
-            if (memberList.Count < 1)
+            if (fourthMatchMemberList.Count < 1)
             {
                 this._memberView.messageForError("No member matched with your boat type.");
                 return;
             } else
             {
                 this._memberView.messageForSuccess("Following member(s) matched with your search criteria(s).");
-                this._memberView.viewVerboseList(memberList);
+                this._memberView.viewVerboseList(fourthMatchMemberList);
             }
         }
 

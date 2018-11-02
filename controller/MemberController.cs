@@ -12,7 +12,7 @@ namespace Controller
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
         private Model.CreateMember _createMember;
-        private Model.Search.SearchFactory _searchFactory;
+        private Controller.SearchController _searchController;
 
         public string MemberID
         { 
@@ -34,11 +34,11 @@ namespace Controller
             Invalid
         }
 
-        public MemberController()
+        public MemberController(Controller.SearchController a_searchController)
         {
             this._createMember = new Model.CreateMember();
             this._memberView = new View.MemberView();
-            this._searchFactory = new Model.Search.SearchFactory();
+            this._searchController = a_searchController;
 
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
@@ -137,7 +137,7 @@ namespace Controller
             string username = this._memberView.getUsernameInput("Username: ");
             string password = this._memberView.getMemberPasswordInput("Password: ");
 
-            Model.Member member = this.searchForMemberByName(username);
+            Model.Member member = this._searchController.searchForMemberByName(username);
 
             if (member == null)
             {
@@ -155,90 +155,6 @@ namespace Controller
             }
         }
 
-        public void searchAndViewMembersByNameBoatType()
-        {
-            List<Model.Member> memberList_ByName = this.searchAndViewMembersByName(true);
-            
-            if (memberList_ByName == null)
-            {
-                return;
-            }
-
-            int boatTypeAsNumber = this._memberView.getBoatTypeInput();
-            Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
-
-            Model.Search.ISearchMultipleStrategy compareAgeSearchStrategy = _searchFactory.getMultipleNameAndBoatSearch();
-            List<Model.Member> memberList_ByNameAndBoatType = compareAgeSearchStrategy.multipleSearch(new Model.SearchMember{BoatType = boatType}, memberList_ByName);
-
-            if (memberList_ByNameAndBoatType.Count < 1)
-            {
-                this._memberView.messageForError("No member matched with your boat type.");
-                return;
-            } else
-            {
-                this._memberView.messageForSuccess("Following member(s) matched with your search criteria(s).");
-                this._memberView.viewVerboseList(memberList_ByNameAndBoatType);
-            }
-        }
-
-        public void searchAndViewMembersByAge()
-        {
-            string personalNumber = this._memberView.getPersonalnumberInput("Get members according to age. Type personal-number to be set as reference, example [198907076154]: ");
-            bool younger = this._memberView.getBoolInput();
-
-            Model.Search.ISearchCompareAgeStrategy compareAgeSearchStrategy = _searchFactory.getCompareAgeSearch();
-            List<Model.Member> memberList = compareAgeSearchStrategy.compareAgeSearch(new Model.SearchMember{PersonalNumber = personalNumber}, younger);
-
-            if (memberList.Count < 1)
-            {
-                if (younger)
-                {
-                    this._memberView.messageForError("No members are younger than your personalnumber.");
-                } else
-                {
-                    this._memberView.messageForError("No members are older than your personalnumber.");
-                }
-
-                return;
-            } else
-            {
-                if (younger)
-                {
-                    this._memberView.messageForSuccess("Following members are younger than your personalnumber.");
-                } else
-                {
-                    this._memberView.messageForSuccess("Following members are older than your personalnumber.");
-                }
-            }
-
-            this._memberView.viewVerboseList(memberList);
-        }
-
-        public List<Model.Member> searchAndViewMembersByName(bool extendedSearch)
-        {
-            string searchString = this._memberView.getSearchInput("Get all username(s) with character(s): ");
-            
-            Model.Search.ISearchGenericStrategy genericSearchStrategy = _searchFactory.getGenericCharacterSearch();
-            List<Model.Member> memberList = genericSearchStrategy.characterSearch(new Model.SearchMember{SearchString = searchString});
-
-            if (memberList.Count < 1)
-            {
-                this._memberView.messageForError("No username matched with your character(s).");
-                return null;
-            }
-
-            if (extendedSearch)
-            {
-                return memberList;
-            } else
-            {
-                this._memberView.messageForSuccess("Following username(s) matched with your character(s).");
-                this._memberView.viewVerboseList(memberList);
-
-                return null;
-            }
-        }
-
         private void loadMemberListFromFile()
         {
             if (base.fileExists(base.filePath()) == true)
@@ -249,7 +165,7 @@ namespace Controller
 
         private bool verifyUserName(string username)
         {
-            Model.Member member = this.searchForMemberByName(username);
+            Model.Member member = this._searchController.searchForMemberByName(username);
             
             if (member == null)
             {
@@ -265,16 +181,9 @@ namespace Controller
             }
         }
 
-        private Model.Member searchForMemberByName(string name)
-        {
-            Model.Search.ISearchUniqueStrategy uniqueSearchStrategy = _searchFactory.getUniqueMemberSearch();
-            Model.Member Member = uniqueSearchStrategy.uniqueSearch(new Model.SearchMember{Name = name});
-            return Member;
-        }
-
         private bool verifyPersonalNumber(string personalNumber)
         {
-            Model.Member member = this.searchForMemberByPersonalNumber(personalNumber);
+            Model.Member member = this._searchController.searchForMemberByPersonalNumber(personalNumber);
             
             if (member == null)
             {
@@ -288,13 +197,6 @@ namespace Controller
             {
                 return false;
             }
-        }
-
-        private Model.Member searchForMemberByPersonalNumber(string personalNumber)
-        {
-            Model.Search.ISearchUniqueStrategy searchForMember = _searchFactory.getUniqueMemberSearch();
-            Model.Member Member = searchForMember.uniqueSearch(new Model.SearchMember{PersonalNumber = personalNumber});
-            return Member;
         }
     }
 }

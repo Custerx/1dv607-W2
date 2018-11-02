@@ -8,10 +8,12 @@ namespace Controller
         private View.MenuView _menuView;
         private Controller.MemberController _memberController;
         private Controller.BoatController _boatController;
+        private Controller.SearchController _searchController;
 
         public BoatClubController() {
             this._menuView = new View.MenuView();
-            this._memberController = new Controller.MemberController();
+            this._searchController = new SearchController();
+            this._memberController = new Controller.MemberController(this._searchController);
             this._boatController = new Controller.BoatController();
         }
 
@@ -97,17 +99,17 @@ namespace Controller
 
             if (userPreviousChoice == View.MenuView.SearchMenuChoice.Username)
             {
-                this._memberController.searchAndViewMembersByName(false);
+                this._searchController.searchAndViewMembersByName(false);
             }
 
             if (userPreviousChoice == View.MenuView.SearchMenuChoice.Age)
             {
-                this._memberController.searchAndViewMembersByAge();
+                this._searchController.searchAndViewMembersByAge();
             }
 
             if (userPreviousChoice == View.MenuView.SearchMenuChoice.UsernameBoatType)
             {
-                this._memberController.searchAndViewMembersByNameBoatType();
+                this._searchController.searchAndViewMembersByNameBoatType();
             }
 
             if (userPreviousChoice == View.MenuView.SearchMenuChoice.Back)

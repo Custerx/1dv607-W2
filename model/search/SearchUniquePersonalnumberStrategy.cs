@@ -3,18 +3,18 @@ using System.Linq;
 
 namespace Model.Search
 {
-    public class NameSearchStrategy : Model.Database, ISearchUniqueStrategy
+    public class SearchUniquePersonalnumberStrategy : Model.Database, ISearchUniqueStrategy
     {
         public Model.Member uniqueSearch(Model.SearchMember searchCriteria)
         {
             List<Model.Member> memberList = base.LoadMemberList();
 
-            foreach(var Member in memberList.Where(member => member.Name.Equals(searchCriteria.Name)))
+            foreach(var Member in memberList.Where(member => member.PersonalNumber.Equals(searchCriteria.PersonalNumber)))
             {
                 return Member;
             }
 
-            return null;           
+            return null;
         }
     }
 }

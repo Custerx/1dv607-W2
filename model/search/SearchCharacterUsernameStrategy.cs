@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Model.Search
 {
-    public class CharacterSearchStrategy : Model.Database, ISearchGenericStrategy
+    public class SearchCharacterUsernameStrategy : Model.Database, ISearchCharacterStrategy
     {
         public List<Model.Member> characterSearch(Model.SearchMember searchCriteria)
         {

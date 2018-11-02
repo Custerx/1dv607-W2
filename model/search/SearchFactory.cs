@@ -2,14 +2,19 @@ namespace Model.Search
 {
     public class SearchFactory
     {
-        public ISearchGenericStrategy getGenericCharacterSearch()
+        public ISearchCharacterStrategy getCharacterUsernameSearch()
         {
-            return new CharacterSearchStrategy();
+            return new SearchCharacterUsernameStrategy();
         }
 
-        public ISearchMultipleStrategy getMultipleNameAndBoatSearch()
+        public ISearchCharacterStrategy getCharacterPersonalnumberSearch()
         {
-            return new NameAndBoatSearchStrategy();
+            return new SearchCharacterPersonalnumberStrategy();
+        }
+
+        public ISearchMultipleStrategy getMultipleSearch_NameAndBoat()
+        {
+            return new SearchNameAndBoatSearchStrategy();
         }
 
         public ISearchCompareAgeStrategy getCompareAgeSearch()
@@ -17,14 +22,14 @@ namespace Model.Search
             return new CompareAgeStrategy();
         }
 
-        public ISearchUniqueStrategy getUniqueMemberSearch()
+        public ISearchUniqueStrategy getUniqueNameSearch()
         {
-            return new NameSearchStrategy();
+            return new SearchUniqueNameStrategy();
         }
 
         public ISearchUniqueStrategy getUniquePersonalnumberSearch()
         {
-            return new PersonalnumberSearchStrategy();
+            return new SearchUniquePersonalnumberStrategy();
         }
     }
 }

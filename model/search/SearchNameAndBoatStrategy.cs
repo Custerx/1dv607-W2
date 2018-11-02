@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Model.Search
 {
-    public class NameAndBoatSearchStrategy : Model.Database, ISearchMultipleStrategy
+    public class SearchNameAndBoatSearchStrategy : Model.Database, ISearchMultipleStrategy
     {
         public List<Model.Member> multipleSearch(Model.SearchMember searchCriteria, List<Model.Member> memberList_ByName)
         {

@@ -4,6 +4,6 @@ namespace Model.Search
 {
     public interface ISearchCharacterStrategy
     {
-        List<Model.Member> characterSearch(Model.SearchMember searchCriteria);
+        List<Model.Member> characterSearch(Model.SearchMember a_searchCriteria, List<Model.Member> a_memberList);
     }
 }

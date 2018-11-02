@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Controller
 {
-    public class SearchController
+    public class SearchController : Model.Database
     {
         private View.MemberView _memberView;
         private Model.Search.SearchFactory _searchFactory;
@@ -33,8 +33,9 @@ namespace Controller
         }
 
         public void complexSearchGrade4(string a_username, string a_birthYear, string a_personalNumber, bool a_younger, Enums.BoatTypes.Boats a_boatType)
-        {      
-            List<Model.Member> memberList = this._searchCharacterUsername.characterSearch(new Model.SearchMember{SearchString = a_username});
+        {
+            List<Model.Member> completeMemberList = base.LoadMemberList();      
+            List<Model.Member> memberList = this._searchCharacterUsername.characterSearch(new Model.SearchMember{SearchString = a_username}, completeMemberList);
 
             if (memberList.Count < 1)
             {
@@ -42,7 +43,7 @@ namespace Controller
                 return;
             }
          
-            memberList = this._searchCharacterPersonalnumber.characterSearch(new Model.SearchMember{SearchString = a_birthYear});
+            memberList = this._searchCharacterPersonalnumber.characterSearch(new Model.SearchMember{SearchString = a_birthYear}, memberList);
 
             if (memberList.Count < 1)
             {
@@ -50,7 +51,7 @@ namespace Controller
                 return;
             }
 
-            memberList = this._compareAgeSearch.compareAgeSearch(new Model.SearchMember{PersonalNumber = a_personalNumber}, a_younger);
+            memberList = this._compareAgeSearch.compareAgeSearch(new Model.SearchMember{PersonalNumber = a_personalNumber}, a_younger, memberList);
 
             if (memberList.Count < 1)
             {
@@ -117,7 +118,8 @@ namespace Controller
             string personalNumber = this._memberView.getPersonalnumberInput("Get members according to age. Type personal-number to be set as reference, example [198907076154]: ");
             bool younger = this._memberView.getBoolInput();
 
-            List<Model.Member> memberList = this._compareAgeSearch.compareAgeSearch(new Model.SearchMember{PersonalNumber = personalNumber}, younger);
+            List<Model.Member> completeMemberList = base.LoadMemberList();
+            List<Model.Member> memberList = this._compareAgeSearch.compareAgeSearch(new Model.SearchMember{PersonalNumber = personalNumber}, younger, completeMemberList);
 
             if (memberList.Count < 1)
             {
@@ -148,7 +150,8 @@ namespace Controller
         {
             string searchString = this._memberView.getSearchInput("Get all username(s) with character(s): ");
             
-            List<Model.Member> memberList = this._searchCharacterUsername.characterSearch(new Model.SearchMember{SearchString = searchString});
+            List<Model.Member> completeMemberList = base.LoadMemberList();
+            List<Model.Member> memberList = this._searchCharacterUsername.characterSearch(new Model.SearchMember{SearchString = searchString}, completeMemberList);
 
             if (memberList.Count < 1)
             {
@@ -170,13 +173,15 @@ namespace Controller
 
         public Model.Member searchForMemberByName(string name)
         {
-            Model.Member Member = this._uniqueNameSearch.uniqueSearch(new Model.SearchMember{Name = name});
+            List<Model.Member> memberList = base.LoadMemberList();
+            Model.Member Member = this._uniqueNameSearch.uniqueSearch(new Model.SearchMember{Name = name}, memberList);
             return Member;
         }
 
         public Model.Member searchForMemberByPersonalNumber(string personalNumber)
         {
-            Model.Member Member = this._uniquePersonalnumberSearch.uniqueSearch(new Model.SearchMember{PersonalNumber = personalNumber});
+            List<Model.Member> memberList = base.LoadMemberList();
+            Model.Member Member = this._uniquePersonalnumberSearch.uniqueSearch(new Model.SearchMember{PersonalNumber = personalNumber}, memberList);
             return Member;
         }
     }

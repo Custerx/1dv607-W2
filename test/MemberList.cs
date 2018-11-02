@@ -65,6 +65,11 @@ namespace Test
                 memberList.Add(this.genericMember());
             }
 
+            // Create member rogge and a sailboat for hardcoded example.
+            Model.Member rogge = m_createMember.create("roggehardcoded", "198806081212", _password);
+            rogge.Boats.Add(new Model.Boat(Enums.BoatTypes.Boats.Sailboat, this.randomBoatLength(), this.randomID()));
+            memberList.Add(rogge);
+
             return memberList;
         }
         private Model.Member genericMember()

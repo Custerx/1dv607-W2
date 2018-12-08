@@ -86,7 +86,7 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    return getMenuChoice(int.Parse(input));
+                    return (MenuChoice)int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -119,7 +119,7 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    return getGuestMenuChoice(int.Parse(input));
+                    return (GuestChoice)int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -152,7 +152,7 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    return getStartMenuChoice(int.Parse(input));
+                    return (StartMenuChoice)int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -190,7 +190,7 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    return getBoatMenuChoice(int.Parse(input));
+                    return (BoatMenuChoice)int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -228,7 +228,7 @@ namespace View
                         throw new ApplicationException();
                     }
 
-                    return getSearchMenuChoice(int.Parse(input));
+                    return (SearchMenuChoice)int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -266,7 +266,7 @@ namespace View
                         throw new ApplicationException();
                     }
                     
-                    return getMemberMenuChoice(int.Parse(input));
+                    return (MemberMenuChoice)int.Parse(input);
                 }
                 catch (Exception)
                 {
@@ -285,181 +285,6 @@ namespace View
             Console.Write("\nGoodbye!\n");
             Console.ResetColor();
             Environment.Exit(0);
-        }
-
-        private MenuChoice getMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return MenuChoice.Login;
-            }
-            
-            if (choice == 1)
-            {
-                return MenuChoice.Register;
-            }
-
-            if (choice == 2)
-            {
-                return MenuChoice.Guest;
-            }
-
-            if (choice == 3)
-            {
-                return MenuChoice.Exit;
-            }
-
-            return MenuChoice.Invalid;
-        }
-
-        private GuestChoice getGuestMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return GuestChoice.Compactlist;
-            }
-            
-            if (choice == 1)
-            {
-                return GuestChoice.Verboselist;
-            }
-
-            if (choice == 2)
-            {
-                return GuestChoice.ClubsBoatlist;
-            }
-
-            if (choice == 3)
-            {
-                return GuestChoice.Search;
-            }
-
-            if (choice == 4)
-            {
-                return GuestChoice.Exit;
-            }
-
-            return GuestChoice.Invalid;
-        }
-
-        private StartMenuChoice getStartMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return StartMenuChoice.Member;
-            }
-            
-            if (choice == 1)
-            {
-                return StartMenuChoice.Boat;
-            }
-
-            if (choice == 2)
-            {
-                return StartMenuChoice.Search;
-            }
-
-            if (choice == 3)
-            {
-                return StartMenuChoice.Exit;
-            }
-
-            return StartMenuChoice.Invalid;
-        }
-
-        private BoatMenuChoice getBoatMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return BoatMenuChoice.Register;
-            }
-            
-            if (choice == 1)
-            {
-                return BoatMenuChoice.Update;
-            }
-
-            if (choice == 2)
-            {
-                return BoatMenuChoice.Delete;
-            }
-
-            if (choice == 3)
-            {
-                return BoatMenuChoice.View;
-            }
-
-            if (choice == 4)
-            {
-                return BoatMenuChoice.ClubsBoatlist;
-            }
-
-            if (choice == 5)
-            {
-                return BoatMenuChoice.Back;
-            }
-
-            return BoatMenuChoice.Invalid;
-        }
-
-        private SearchMenuChoice getSearchMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return SearchMenuChoice.Username;
-            }
-            
-            if (choice == 1)
-            {
-                return SearchMenuChoice.Age;
-            }
-
-            if (choice == 2)
-            {
-                return SearchMenuChoice.UsernameBoatType;
-            }
-
-            if (choice == 3)
-            {
-                return SearchMenuChoice.HardcodedGrade4Example;
-            }
-
-            if (choice == 4)
-            {
-                return SearchMenuChoice.Back;
-            }
-
-            return SearchMenuChoice.Invalid;
-        }
-
-        private MemberMenuChoice getMemberMenuChoice(int choice)
-        {
-            if (choice == 0)
-            {
-                return MemberMenuChoice.Compactlist;
-            }
-            
-            if (choice == 1)
-            {
-                return MemberMenuChoice.Verboselist;
-            }
-
-            if (choice == 2)
-            {
-                return MemberMenuChoice.Update;
-            }
-
-            if (choice == 3)
-            {
-                return MemberMenuChoice.Delete;
-            }
-
-            if (choice == 4)
-            {
-                return MemberMenuChoice.Back;
-            }
-
-            return MemberMenuChoice.Invalid;
         }
     }
 }

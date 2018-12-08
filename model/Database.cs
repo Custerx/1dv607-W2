@@ -10,8 +10,8 @@ namespace Model
     {
         public List<Model.Member> LoadMemberList() 
         {
-            List<Model.Member> deserializedMemberlist = JsonConvert.DeserializeObject<List<Model.Member>>(File.ReadAllText(@filePath()));
 
+            List<Model.Member> deserializedMemberlist = JsonConvert.DeserializeObject<List<Model.Member>>(File.ReadAllText(@filePath()));
             return deserializedMemberlist;
         }
 

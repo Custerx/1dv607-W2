@@ -8,7 +8,7 @@ namespace Test
     {
         private static Random _random = new Random();
         private string _password = "testtest";
-        private Model.CreateMember m_createMember;
+        private Model.MemberFactory m_createMember;
         private List<Model.Member> _memberList50;
 
         public List<Model.Member> create50membersAnd200Boats()
@@ -23,7 +23,7 @@ namespace Test
             return _memberList50;
         }
 
-        public MemberList(Model.CreateMember a_createMember)
+        public MemberList(Model.MemberFactory a_createMember)
         {
             m_createMember = a_createMember;
         }
@@ -66,7 +66,7 @@ namespace Test
             }
 
             // Create member rogge and a sailboat for hardcoded example.
-            Model.Member rogge = m_createMember.create("roggehardcoded", "198806081212", _password);
+            Model.Member rogge = m_createMember.Create("roggehardcoded", "198806081212", _password);
             rogge.Boats.Add(new Model.Boat(Enums.BoatTypes.Boats.Sailboat, this.randomBoatLength(), this.randomID()));
             memberList.Add(rogge);
 
@@ -74,7 +74,7 @@ namespace Test
         }
         private Model.Member genericMember()
         {
-            return m_createMember.create(this.randomName(), "19" + this.randomPersonalNumber(), _password);
+            return m_createMember.Create(this.randomName(), "19" + this.randomPersonalNumber(), _password);
         }
 
         private string randomPersonalNumber(int length = 10)

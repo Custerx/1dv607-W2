@@ -11,7 +11,7 @@ namespace Controller
         private string _memberID;
         private View.MemberView _memberView;
         private List<Model.Member> _memberModelList;
-        private Model.CreateMember _createMember;
+        private Model.MemberFactory _memberFactory;
         private Controller.SearchController _searchController;
 
         public string MemberID
@@ -36,13 +36,13 @@ namespace Controller
 
         public MemberController(Controller.SearchController a_searchController)
         {
-            this._createMember = new Model.CreateMember();
+            this._memberFactory = new Model.MemberFactory();
             this._memberView = new View.MemberView();
             this._searchController = a_searchController;
 
             if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
-                var memberList = new Test.MemberList(this._createMember);
+                var memberList = new Test.MemberList(this._memberFactory);
                 List<Model.Member> memberListForTesting = memberList.create50membersAnd200Boats();
 
                 base.saveToFile(memberListForTesting);
@@ -87,7 +87,7 @@ namespace Controller
 
             string password = this._memberView.getMemberPasswordInput("Chose password: ");
             
-            Model.Member member = this._createMember.create(username, personalNumber, password);
+            Model.Member member = this._memberFactory.Create(username, personalNumber, password);
             this._memberModelList.Add(member);
             base.saveToFile(this._memberModelList); 
             

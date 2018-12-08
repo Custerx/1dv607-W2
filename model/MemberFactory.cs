@@ -1,15 +1,15 @@
 namespace Model
 {
-    public class CreateMember
+    public class MemberFactory
     {
         private Model.ID _ID;
 
-        public CreateMember()
+        public MemberFactory()
         {
             _ID = new Model.ID();
         }
 
-        public Model.Member create(string username, string personalNumber, string password)
+        public Model.Member Create(string username, string personalNumber, string password)
         {
             return new Model.Member(username, personalNumber, _ID.createID(), password);
         }

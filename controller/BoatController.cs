@@ -5,10 +5,11 @@ using Newtonsoft.Json;
 
 namespace Controller
 {
-    public class BoatController : Model.Database
+    public class BoatController
     {
         private View.BoatView _boatView;
         private Model.CreateBoat _createBoat;
+        private Model.Database _database;
 
         public enum Alternatives
         {
@@ -21,47 +22,39 @@ namespace Controller
         {
             this._createBoat = new Model.CreateBoat();
             this._boatView = new View.BoatView();
+            this._database = new Model.Database();
         }
 
         public void listBoatClubBoats()
         {
-            List<Model.Member> memberList = base.LoadMemberList();
-            this._boatView.viewAllBoatClubBoats(memberList);
+            this._boatView.viewAllBoatClubBoats(this._database.LoadMemberList());
         }
 
         public void registerBoatOnList() 
         {
             string id = this._boatView.getIDInput("The boat owner's 6-character ID: ");
 
-            List<Model.Member> MemberList = base.LoadMemberList();
-
-            for (int i = 0; i < MemberList.Count; i++)
+            if(this._database.memberExists(id))
             {
-                if (MemberList[i].MemberID == id) 
-                {
-                    int boatTypeAsNumber = this._boatView.getBoatTypeInput();
-                    Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
-                    int boatLength = this._boatView.getBoatLengthInput();
-                    
-                    Model.Boat boat = this._createBoat.create(boatType, boatLength);
-                    MemberList[i].Boats.Add(boat);
-                    base.saveToFile(MemberList);
+                int boatTypeAsNumber = this._boatView.getBoatTypeInput();
+                Enums.BoatTypes.Boats boatType = (Enums.BoatTypes.Boats)Convert.ToInt32(boatTypeAsNumber);
+                int boatLength = this._boatView.getBoatLengthInput();
+                Model.Boat boat = this._createBoat.create(boatType, boatLength);
 
-                    this._boatView.messageForSuccess(boatType + " " + boatLength + "m successfully added!");
-
-                    return;
-                }
+                this._database.registerBoatOnList(id, boat);
+                this._boatView.messageForSuccess("Boat successfully added!");
+            } else
+            {
+                this._boatView.messageForError("No matching member!");
             }
-
-            this._boatView.messageForError("No matching member!");
         }
 
         public void delete_Update_View_BoatFromList(Alternatives action) 
         {
-            List<Model.Member> memberList = base.LoadMemberList();
+            List<Model.Member> memberList = this._database.LoadMemberList();
 
             memberList = delete_Update_View_BoatDetails(memberList, action);
-            base.saveToFile(memberList);
+            this._database.saveAllToFile(memberList);
         }
 
         private List<Model.Member> delete_Update_View_BoatDetails(List<Model.Member> viewMemberList, Alternatives action)

@@ -6,13 +6,13 @@ using Newtonsoft.Json;
 
 namespace Controller
 {
-    public class MemberController : Model.Database
+    public class MemberController
     {
         private string _memberID;
         private View.MemberView _memberView;
-        private List<Model.Member> _memberModelList;
         private Model.MemberFactory _memberFactory;
         private Controller.SearchController _searchController;
+        private Model.Database _database;
 
         public string MemberID
         { 
@@ -38,16 +38,15 @@ namespace Controller
         {
             this._memberFactory = new Model.MemberFactory();
             this._memberView = new View.MemberView();
+            this._database = new Model.Database();
             this._searchController = a_searchController;
 
-            if (base.fileExists(base.filePath()) == false) // No file -> creates a new file and user have to register a new member.
+            if (_database.fileExists(_database.filePath()) == false) // No file -> creates a new file and user have to register a new member.
             {
                 var memberList = new Test.MemberList(this._memberFactory);
-                List<Model.Member> memberListForTesting = memberList.create50membersAnd200Boats();
-
-                base.saveToFile(memberListForTesting);
+                this._database.CreateTestMembers(memberList);
                 
-                this._memberView.messageForSuccess("New file created at: " + base.filePath() + " with 50 members and 4 boats each.");
+                this._memberView.messageForSuccess("New file created at: " + this._database.filePath() + " with 50 members and 4 boats each.");
                 
                 this.registerMemberOnList();
             }
@@ -55,14 +54,12 @@ namespace Controller
 
         public void verboseList()
         {
-            List<Model.Member> memberList = base.LoadMemberList();
-            this._memberView.viewVerboseList(memberList);
+            this._memberView.viewVerboseList(this._database.LoadMemberList());
         }
 
         public void compactList()
         {
-            List<Model.Member> memberList = base.LoadMemberList();
-            this._memberView.viewCompactList(memberList);
+            this._memberView.viewCompactList(this._database.LoadMemberList());
         }
 
         public void registerMemberOnList() 
@@ -83,13 +80,10 @@ namespace Controller
                 return;
             }          
 
-            this.loadMemberListFromFile();
-
             string password = this._memberView.getMemberPasswordInput("Chose password: ");
             
             Model.Member member = this._memberFactory.Create(username, personalNumber, password);
-            this._memberModelList.Add(member);
-            base.saveToFile(this._memberModelList); 
+            this._database.saveToFile(member);
             
             this._memberView.messageForSuccess("Member successfully registered! Please login.");              
         }
@@ -98,38 +92,31 @@ namespace Controller
         {
             string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type the 6-character ID on the member to be removed: ");
 
-            this.loadMemberListFromFile();
+            bool delete = this._database.deleteMemberFromList(id);
 
-            for (int i = 0; i < this._memberModelList.Count; i++)
+            if(delete)
             {
-                if (this._memberModelList[i].MemberID == id) {
-                    this._memberModelList.RemoveAt(i);
-                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully deleted!");
-                    base.saveToFile(this._memberModelList);
-                    return;
-                }
+                this._memberView.messageForSuccess("Member successfully deleted!");
+            } else
+            {
+                this._memberView.messageForError("No matching member!");
             }
-            
-            this._memberView.messageForError("No matching member!");
         }
 
         public void updateMemberOnList() {
             string id = this._memberView.getIDInput("(Your ID: " + this.MemberID + ")" + " Type 6-character ID on the member to be updated: ");
 
-            this.loadMemberListFromFile();
+            bool delete = this._database.deleteMemberFromList(id);
 
-            for (int i = 0; i < this._memberModelList.Count; i++)
+            if (delete)
             {
-                if (this._memberModelList[i].MemberID == id) {
-                    this._memberModelList.RemoveAt(i);
-                    base.saveToFile(this._memberModelList);
-                    this.registerMemberOnList();
-                    this._memberView.messageForSuccess("Member " + this._memberModelList[i].Name + " successfully updated!");
-                    return;
-                }
+                this.registerMemberOnList();
+                this._memberView.messageForSuccess("Member successfully updated!");
             }
-
-            this._memberView.messageForError("Member not found!");
+            else
+            {
+                this._memberView.messageForError("Member not found!");
+            }
         }
 
         public Login authorization()
@@ -152,14 +139,6 @@ namespace Controller
             {
                 this._memberView.messageForError("Wrong username or password.");
                 return Login.Failed;
-            }
-        }
-
-        private void loadMemberListFromFile()
-        {
-            if (base.fileExists(base.filePath()) == true)
-            {
-                this._memberModelList = base.LoadMemberList();
             }
         }
 
